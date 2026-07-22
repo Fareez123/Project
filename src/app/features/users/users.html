@@ -1,0 +1,532 @@
+<section class="page-heading">
+  <div>
+    <p class="page-eyebrow">ADMINISTRATION</p>
+
+    <h1>User Management</h1>
+
+    <p class="page-description">
+      Manage FlowDesk users, roles, departments, and account access.
+    </p>
+  </div>
+
+  <button
+    type="button"
+    class="button button--primary"
+    (click)="openUserModal()"
+  >
+    <span aria-hidden="true">+</span>
+    Add User
+  </button>
+</section>
+
+<section class="user-statistics" aria-label="User statistics">
+  <article class="user-statistic-card user-statistic-card--total">
+    <div class="user-statistic-card__top">
+      <p>Total Users</p>
+      <span class="user-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ users.length }}</strong>
+    <small>All registered FlowDesk users</small>
+  </article>
+
+  <article class="user-statistic-card user-statistic-card--active">
+    <div class="user-statistic-card__top">
+      <p>Active Users</p>
+      <span class="user-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ getUserCount('Active') }}</strong>
+    <small>Users with active system access</small>
+  </article>
+
+  <article class="user-statistic-card user-statistic-card--invited">
+    <div class="user-statistic-card__top">
+      <p>Pending Invitations</p>
+      <span class="user-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ getUserCount('Invited') }}</strong>
+    <small>Users who have not accepted their invitation</small>
+  </article>
+
+  <article class="user-statistic-card user-statistic-card--inactive">
+    <div class="user-statistic-card__top">
+      <p>Inactive Users</p>
+      <span class="user-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ getUserCount('Inactive') }}</strong>
+    <small>Accounts without system access</small>
+  </article>
+</section>
+
+<section class="content-card users-card">
+  <div class="content-card__header users-card__header">
+    <div>
+      <h2>System Users</h2>
+
+      <p>
+        Search users and manage their system roles and account status.
+      </p>
+    </div>
+
+    <span class="user-total">
+      {{ filteredUsers.length }}
+      {{ filteredUsers.length === 1 ? 'user' : 'users' }}
+    </span>
+  </div>
+
+  <div class="user-toolbar">
+    <div class="search-field">
+      <span class="search-field__icon" aria-hidden="true">
+        ⌕
+      </span>
+
+      <input
+        type="search"
+        aria-label="Search users"
+        placeholder="Search by name, email, or department"
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-field">
+        <label for="roleFilter" class="visually-hidden">
+          Filter by role
+        </label>
+
+        <select id="roleFilter" [(ngModel)]="selectedRole">
+          <option value="">All roles</option>
+          <option value="Administrator">Administrator</option>
+          <option value="Approver">Approver</option>
+          <option value="Requester">Requester</option>
+          <option value="Support Agent">Support Agent</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="departmentFilter" class="visually-hidden">
+          Filter by department
+        </label>
+
+        <select
+          id="departmentFilter"
+          [(ngModel)]="selectedDepartment"
+        >
+          <option value="">All departments</option>
+          <option value="Information Technology">
+            Information Technology
+          </option>
+          <option value="Finance">Finance</option>
+          <option value="Human Resources">Human Resources</option>
+          <option value="Operations">Operations</option>
+          <option value="Administration">Administration</option>
+          <option value="Project Management">Project Management</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="statusFilter" class="visually-hidden">
+          Filter by account status
+        </label>
+
+        <select id="statusFilter" [(ngModel)]="selectedStatus">
+          <option value="">All statuses</option>
+          <option value="Active">Active</option>
+          <option value="Invited">Invited</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      @if (hasActiveFilters()) {
+        <button
+          type="button"
+          class="clear-filter-button"
+          (click)="clearFilters()"
+        >
+          Clear filters
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table users-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Last Active</th>
+
+          <th>
+            <span class="visually-hidden">Actions</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (user of filteredUsers; track user.id) {
+          <tr>
+            <td>
+              <div class="user-identity">
+                <span class="user-avatar" aria-hidden="true">
+                  {{ getInitials(user.name) }}
+                </span>
+
+                <div class="user-identity__details">
+                  <strong>{{ user.name }}</strong>
+                  <span>{{ user.email }}</span>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <span class="department-name">
+                {{ user.department }}
+              </span>
+            </td>
+
+            <td>
+              <div class="role-control">
+                <span [class]="getRoleClass(user.role)">
+                  {{ user.role }}
+                </span>
+
+                <select
+                  [attr.aria-label]="'Change role for ' + user.name"
+                  [ngModel]="user.role"
+                  (ngModelChange)="updateUserRole(user, $event)"
+                >
+                  <option value="Administrator">
+                    Administrator
+                  </option>
+
+                  <option value="Approver">
+                    Approver
+                  </option>
+
+                  <option value="Requester">
+                    Requester
+                  </option>
+
+                  <option value="Support Agent">
+                    Support Agent
+                  </option>
+                </select>
+              </div>
+            </td>
+
+            <td>
+              <span [class]="getStatusClass(user.status)">
+                <span class="status-badge__dot" aria-hidden="true"></span>
+                {{ user.status }}
+              </span>
+            </td>
+
+            <td>
+              <span class="last-active">
+                {{ user.lastActive }}
+              </span>
+            </td>
+
+            <td>
+              <div class="user-actions">
+                @if (user.status === 'Invited') {
+                  <button
+                    type="button"
+                    class="table-action"
+                    (click)="resendInvitation(user)"
+                  >
+                    Resend Invite
+                  </button>
+                }
+
+                <button
+                  type="button"
+                  class="account-action"
+                  [class.account-action--deactivate]="
+                    user.status === 'Active'
+                  "
+                  [class.account-action--activate]="
+                    user.status !== 'Active'
+                  "
+                  (click)="toggleUserStatus(user)"
+                >
+                  {{ getStatusActionLabel(user) }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <span class="empty-state__icon" aria-hidden="true">
+                  ◯
+                </span>
+
+                <h3>No users found</h3>
+
+                <p>
+                  No users match your current search or filter selection.
+                </p>
+
+                @if (hasActiveFilters()) {
+                  <button
+                    type="button"
+                    class="button button--secondary"
+                    (click)="clearFilters()"
+                  >
+                    Clear Filters
+                  </button>
+                } @else {
+                  <button
+                    type="button"
+                    class="button button--primary"
+                    (click)="openUserModal()"
+                  >
+                    Add First User
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (filteredUsers.length > 0) {
+    <div class="table-footer">
+      <p>
+        Showing
+        <strong>{{ filteredUsers.length }}</strong>
+        of
+        <strong>{{ users.length }}</strong>
+        users
+      </p>
+    </div>
+  }
+</section>
+
+@if (isUserModalOpen) {
+  <div
+    class="modal-backdrop"
+    role="presentation"
+    (click)="closeUserModal()"
+  >
+    <section
+      class="user-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="addUserTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="user-modal__header">
+        <div>
+          <p class="modal-eyebrow">NEW ACCOUNT</p>
+          <h2 id="addUserTitle">Add User</h2>
+          <span>
+            Create a new FlowDesk account and assign its access level.
+          </span>
+        </div>
+
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Close add user dialog"
+          (click)="closeUserModal()"
+        >
+          ×
+        </button>
+      </div>
+
+      <form
+        #userForm="ngForm"
+        class="user-form"
+        (ngSubmit)="addUser()"
+      >
+        <div class="form-grid">
+          <div class="form-field form-field--full">
+            <label for="fullName">
+              Full Name
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              placeholder="Enter the user's full name"
+              [(ngModel)]="newUser.name"
+              required
+            />
+          </div>
+
+          <div class="form-field form-field--full">
+            <label for="email">
+              Email Address
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="name@company.com"
+              [(ngModel)]="newUser.email"
+              required
+              email
+            />
+
+            <small>
+              An account invitation will be sent to this address.
+            </small>
+          </div>
+
+          <div class="form-field">
+            <label for="department">
+              Department
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <select
+              id="department"
+              name="department"
+              [(ngModel)]="newUser.department"
+              required
+            >
+              <option value="" disabled>
+                Select department
+              </option>
+
+              <option value="Information Technology">
+                Information Technology
+              </option>
+
+              <option value="Finance">
+                Finance
+              </option>
+
+              <option value="Human Resources">
+                Human Resources
+              </option>
+
+              <option value="Operations">
+                Operations
+              </option>
+
+              <option value="Administration">
+                Administration
+              </option>
+
+              <option value="Project Management">
+                Project Management
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="role">
+              System Role
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <select
+              id="role"
+              name="role"
+              [(ngModel)]="newUser.role"
+              required
+            >
+              <option value="" disabled>
+                Select role
+              </option>
+
+              <option value="Administrator">
+                Administrator
+              </option>
+
+              <option value="Approver">
+                Approver
+              </option>
+
+              <option value="Requester">
+                Requester
+              </option>
+
+              <option value="Support Agent">
+                Support Agent
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <section class="role-guidance">
+          <span class="role-guidance__icon" aria-hidden="true">
+            i
+          </span>
+
+          <div>
+            <strong>Role access</strong>
+
+            <p>
+              Administrators manage users and settings. Approvers review
+              requests. Support agents process assigned requests, while
+              requesters submit and track their own requests.
+            </p>
+          </div>
+        </section>
+
+        <div class="modal-actions">
+          <button
+            type="button"
+            class="button button--secondary"
+            (click)="closeUserModal()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="button button--primary"
+            [disabled]="userForm.invalid"
+          >
+            Add User
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+@if (notificationMessage) {
+  <div
+    class="user-notification"
+    [class.user-notification--warning]="
+      notificationType === 'warning'
+    "
+    role="status"
+  >
+    <span class="user-notification__icon" aria-hidden="true">
+      {{ notificationType === 'warning' ? '!' : '✓' }}
+    </span>
+
+    <div>
+      <strong>{{ notificationTitle }}</strong>
+      <p>{{ notificationMessage }}</p>
+    </div>
+
+    <button
+      type="button"
+      class="user-notification__close"
+      aria-label="Close notification"
+      (click)="closeNotification()"
+    >
+      ×
+    </button>
+  </div>
+}

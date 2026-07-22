@@ -1,0 +1,521 @@
+<section class="page-heading">
+  <div>
+    <a routerLink="/requests" class="back-link">
+      <span aria-hidden="true">←</span>
+      Back to My Requests
+    </a>
+
+    <p class="page-eyebrow">REQUEST DETAILS</p>
+
+    <div class="request-heading">
+      <div>
+        <h1>{{ request.title }}</h1>
+
+        <p class="page-description">
+          {{ request.id }} · Submitted {{ request.submittedDate }}
+        </p>
+      </div>
+
+      <div class="request-heading__badges">
+        <span [class]="getPriorityClass(request.priority)">
+          {{ request.priority }} Priority
+        </span>
+
+        <span [class]="getStatusClass(request.status)">
+          <span class="status-badge__dot" aria-hidden="true"></span>
+          {{ request.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-actions">
+    @if (canEditRequest) {
+      <button
+        type="button"
+        class="button button--secondary"
+        (click)="editRequest()"
+      >
+        Edit Request
+      </button>
+    }
+
+    @if (canCancelRequest) {
+      <button
+        type="button"
+        class="button button--danger"
+        (click)="openCancelConfirmation()"
+      >
+        Cancel Request
+      </button>
+    }
+  </div>
+</section>
+
+@if (notificationMessage) {
+  <div
+    class="request-alert"
+    [class.request-alert--success]="notificationType === 'success'"
+    [class.request-alert--warning]="notificationType === 'warning'"
+    role="status"
+  >
+    <span class="request-alert__icon" aria-hidden="true">
+      {{ notificationType === 'success' ? '✓' : '!' }}
+    </span>
+
+    <div>
+      <strong>{{ notificationTitle }}</strong>
+      <p>{{ notificationMessage }}</p>
+    </div>
+
+    <button
+      type="button"
+      class="request-alert__close"
+      aria-label="Close notification"
+      (click)="closeNotification()"
+    >
+      ×
+    </button>
+  </div>
+}
+
+<div class="request-details-layout">
+  <main class="request-details-main">
+    <section class="content-card request-overview-card">
+      <div class="content-card__header">
+        <div>
+          <h2>Request Information</h2>
+
+          <p>
+            General information and details provided when this request was
+            submitted.
+          </p>
+        </div>
+      </div>
+
+      <div class="request-information-grid">
+        <div class="information-item">
+          <span>Request ID</span>
+          <strong>{{ request.id }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Request Type</span>
+          <strong>{{ request.type }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Department</span>
+          <strong>{{ request.department }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Required Date</span>
+          <strong>{{ request.requiredDate }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Submitted</span>
+          <strong>{{ request.submittedDate }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Last Updated</span>
+          <strong>{{ request.updatedDate }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Assigned Team</span>
+          <strong>{{ request.assignedTeam }}</strong>
+        </div>
+
+        <div class="information-item">
+          <span>Assigned Agent</span>
+          <strong>{{ request.assignedAgent }}</strong>
+        </div>
+      </div>
+
+      <div class="request-description-section">
+        <h3>Description</h3>
+
+        <p>{{ request.description }}</p>
+      </div>
+
+      <div class="request-description-section">
+        <h3>Location or Workstation</h3>
+
+        <p>{{ request.location }}</p>
+      </div>
+    </section>
+
+    <section class="content-card attachment-card">
+      <div class="content-card__header">
+        <div>
+          <h2>Attachments</h2>
+
+          <p>
+            Supporting documents and screenshots attached to this request.
+          </p>
+        </div>
+
+        <span class="attachment-count">
+          {{ request.attachments.length }}
+          {{
+            request.attachments.length === 1
+              ? 'attachment'
+              : 'attachments'
+          }}
+        </span>
+      </div>
+
+      <div class="attachment-list">
+        @for (attachment of request.attachments; track attachment.name) {
+          <article class="attachment-item">
+            <span
+              [class]="getAttachmentIconClass(attachment.type)"
+              aria-hidden="true"
+            >
+              {{ getAttachmentLabel(attachment.type) }}
+            </span>
+
+            <div class="attachment-item__details">
+              <strong>{{ attachment.name }}</strong>
+
+              <span>
+                {{ attachment.size }} · Uploaded {{ attachment.uploadedDate }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="attachment-action"
+              (click)="viewAttachment(attachment)"
+            >
+              View
+            </button>
+          </article>
+        } @empty {
+          <div class="section-empty-state">
+            <span aria-hidden="true">—</span>
+
+            <p>No attachments were added to this request.</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="content-card activity-card">
+      <div class="content-card__header">
+        <div>
+          <h2>Request Activity</h2>
+
+          <p>
+            Track updates, decisions, and progress made on this request.
+          </p>
+        </div>
+      </div>
+
+      <div class="activity-timeline">
+        @for (
+          activity of request.activities;
+          track activity.id;
+          let isLast = $last
+        ) {
+          <article
+            class="activity-item"
+            [class.activity-item--last]="isLast"
+          >
+            <div class="activity-item__marker">
+              <span
+                [class]="
+                  'activity-item__icon activity-item__icon--' +
+                  activity.type
+                "
+                aria-hidden="true"
+              >
+                {{ getActivityIcon(activity.type) }}
+              </span>
+            </div>
+
+            <div class="activity-item__content">
+              <div class="activity-item__header">
+                <div>
+                  <strong>{{ activity.title }}</strong>
+
+                  <span>
+                    by {{ activity.actor }}
+                  </span>
+                </div>
+
+                <time>{{ activity.date }}</time>
+              </div>
+
+              <p>{{ activity.description }}</p>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+
+    <section class="content-card comment-card">
+      <div class="content-card__header">
+        <div>
+          <h2>Comments</h2>
+
+          <p>
+            Communicate with the team handling your request.
+          </p>
+        </div>
+
+        <span class="comment-count">
+          {{ comments.length }}
+          {{ comments.length === 1 ? 'comment' : 'comments' }}
+        </span>
+      </div>
+
+      <div class="comment-list">
+        @for (comment of comments; track comment.id) {
+          <article class="comment-item">
+            <span class="comment-avatar" aria-hidden="true">
+              {{ getInitials(comment.author) }}
+            </span>
+
+            <div class="comment-item__content">
+              <div class="comment-item__header">
+                <div>
+                  <strong>{{ comment.author }}</strong>
+
+                  <span>{{ comment.role }}</span>
+                </div>
+
+                <time>{{ comment.date }}</time>
+              </div>
+
+              <p>{{ comment.message }}</p>
+            </div>
+          </article>
+        } @empty {
+          <div class="section-empty-state">
+            <span aria-hidden="true">—</span>
+
+            <p>No comments have been added to this request.</p>
+          </div>
+        }
+      </div>
+
+      @if (request.status !== 'Closed' && request.status !== 'Rejected') {
+        <form
+          class="comment-form"
+          #commentForm="ngForm"
+          (ngSubmit)="addComment()"
+        >
+          <label for="newComment">
+            Add Comment
+          </label>
+
+          <textarea
+            id="newComment"
+            name="newComment"
+            rows="4"
+            maxlength="500"
+            placeholder="Write an update or provide additional information..."
+            [(ngModel)]="newComment"
+            required
+          ></textarea>
+
+          <div class="comment-form__footer">
+            <small>
+              {{ newComment.length }}/500 characters
+            </small>
+
+            <button
+              type="submit"
+              class="button button--primary"
+              [disabled]="commentForm.invalid || !newComment.trim()"
+            >
+              Post Comment
+            </button>
+          </div>
+        </form>
+      } @else {
+        <div class="comments-closed-message">
+          Comments are disabled because this request is
+          {{ request.status.toLowerCase() }}.
+        </div>
+      }
+    </section>
+  </main>
+
+  <aside class="request-details-sidebar">
+    <section class="content-card requester-card">
+      <div class="sidebar-card__header">
+        <h2>Requester</h2>
+      </div>
+
+      <div class="requester-profile">
+        <span class="requester-avatar" aria-hidden="true">
+          {{ getInitials(request.requester.name) }}
+        </span>
+
+        <div>
+          <strong>{{ request.requester.name }}</strong>
+          <span>{{ request.requester.position }}</span>
+        </div>
+      </div>
+
+      <div class="sidebar-information-list">
+        <div>
+          <span>Email</span>
+          <strong>{{ request.requester.email }}</strong>
+        </div>
+
+        <div>
+          <span>Department</span>
+          <strong>{{ request.requester.department }}</strong>
+        </div>
+
+        <div>
+          <span>Employee ID</span>
+          <strong>{{ request.requester.employeeId }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-card status-card">
+      <div class="sidebar-card__header">
+        <h2>Current Status</h2>
+      </div>
+
+      <div class="current-status">
+        <span [class]="getStatusClass(request.status)">
+          <span class="status-badge__dot" aria-hidden="true"></span>
+          {{ request.status }}
+        </span>
+
+        <p>{{ getStatusDescription(request.status) }}</p>
+      </div>
+
+      <div class="status-progress">
+        @for (
+          step of request.progress;
+          track step.label;
+          let isLast = $last
+        ) {
+          <div
+            class="status-step"
+            [class.status-step--complete]="step.completed"
+            [class.status-step--current]="step.current"
+            [class.status-step--last]="isLast"
+          >
+            <div class="status-step__marker">
+              <span>
+                {{ step.completed ? '✓' : '' }}
+              </span>
+            </div>
+
+            <div>
+              <strong>{{ step.label }}</strong>
+              <small>{{ step.date }}</small>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="content-card approval-card">
+      <div class="sidebar-card__header">
+        <h2>Approval</h2>
+      </div>
+
+      <div class="approval-information">
+        <div>
+          <span>Approval Status</span>
+
+          <strong
+            [class]="
+              'approval-result approval-result--' +
+              request.approval.status.toLowerCase()
+            "
+          >
+            {{ request.approval.status }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Approver</span>
+          <strong>{{ request.approval.approver }}</strong>
+        </div>
+
+        <div>
+          <span>Decision Date</span>
+          <strong>{{ request.approval.decisionDate }}</strong>
+        </div>
+
+        @if (request.approval.comment) {
+          <div class="approval-comment">
+            <span>Approver Comment</span>
+            <p>{{ request.approval.comment }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="content-card response-card">
+      <p>Expected Resolution</p>
+
+      <strong>{{ request.expectedResolution }}</strong>
+
+      <span>
+        The resolution target may change depending on request complexity.
+      </span>
+    </section>
+  </aside>
+</div>
+
+@if (isCancelConfirmationOpen) {
+  <div
+    class="modal-backdrop"
+    role="presentation"
+    (click)="closeCancelConfirmation()"
+  >
+    <section
+      class="confirmation-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cancelRequestTitle"
+      (click)="$event.stopPropagation()"
+    >
+      <span class="confirmation-modal__icon" aria-hidden="true">
+        !
+      </span>
+
+      <h2 id="cancelRequestTitle">
+        Cancel this request?
+      </h2>
+
+      <p>
+        This will stop further processing of
+        <strong>{{ request.id }}</strong>.
+        You will need to create a new request if support is still required.
+      </p>
+
+      <div class="confirmation-modal__actions">
+        <button
+          type="button"
+          class="button button--secondary"
+          (click)="closeCancelConfirmation()"
+        >
+          Keep Request
+        </button>
+
+        <button
+          type="button"
+          class="button button--danger"
+          (click)="cancelRequest()"
+        >
+          Cancel Request
+        </button>
+      </div>
+    </section>
+  </div>
+}

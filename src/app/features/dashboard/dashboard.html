@@ -1,0 +1,110 @@
+<section class="page-heading">
+  <div>
+    <p class="page-eyebrow">OVERVIEW</p>
+    <h1>Dashboard</h1>
+    <p class="page-description">
+      Welcome back, Fareez. Here is the latest request activity.
+    </p>
+  </div>
+
+  <a
+    routerLink="/requests/create"
+    class="button button--primary"
+  >
+    <span>+</span>
+    Create Request
+  </a>
+</section>
+
+<section class="statistics-grid" aria-label="Request statistics">
+  @for (statistic of statistics; track statistic.label) {
+    <article
+      class="statistic-card"
+      [class]="'statistic-card statistic-card--' + statistic.type"
+    >
+      <div class="statistic-card__top">
+        <p>{{ statistic.label }}</p>
+        <span class="statistic-indicator"></span>
+      </div>
+
+      <strong>{{ statistic.value }}</strong>
+      <small>{{ statistic.description }}</small>
+    </article>
+  }
+</section>
+
+<section class="content-card">
+  <div class="content-card__header">
+    <div>
+      <h2>Recent Requests</h2>
+      <p>Latest service requests submitted in FlowDesk.</p>
+    </div>
+
+    <a routerLink="/requests" class="text-link">
+      View all requests
+    </a>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Request</th>
+          <th>Type</th>
+          <th>Requester</th>
+          <th>Submitted</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>
+            <span class="visually-hidden">Actions</span>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (request of recentRequests; track request.id) {
+          <tr>
+            <td>
+              <div class="request-identity">
+                <strong>{{ request.id }}</strong>
+                <span>{{ request.title }}</span>
+              </div>
+            </td>
+
+            <td>{{ request.type }}</td>
+            <td>{{ request.requester }}</td>
+            <td>{{ request.submittedDate }}</td>
+
+            <td>
+              <span [class]="getPriorityClass(request.priority)">
+                {{ request.priority }}
+              </span>
+            </td>
+
+            <td>
+              <span [class]="getStatusClass(request.status)">
+                {{ request.status }}
+              </span>
+            </td>
+
+            <td>
+              <button
+                type="button"
+                class="table-action"
+                aria-label="View request"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-message">
+              No requests are currently available.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

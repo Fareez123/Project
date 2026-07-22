@@ -1,0 +1,508 @@
+<section class="page-heading">
+  <div>
+    <p class="page-eyebrow">ANALYTICS</p>
+
+    <h1>Reports</h1>
+
+    <p class="page-description">
+      Monitor request activity, service performance, and resolution trends.
+    </p>
+  </div>
+
+  <div class="page-actions">
+    <button
+      type="button"
+      class="button button--secondary"
+      (click)="downloadCsv()"
+    >
+      Export CSV
+    </button>
+
+    <button
+      type="button"
+      class="button button--primary"
+      (click)="generateReport()"
+    >
+      Generate Report
+    </button>
+  </div>
+</section>
+
+<section class="content-card report-filter-card">
+  <div class="report-filter-card__content">
+    <div>
+      <h2>Report Filters</h2>
+
+      <p>
+        Select the reporting period and department to update the analytics.
+      </p>
+    </div>
+
+    <div class="report-filters">
+      <div class="filter-field">
+        <label for="periodFilter">Reporting Period</label>
+
+        <select
+          id="periodFilter"
+          [(ngModel)]="selectedPeriod"
+        >
+          <option value="6">Last 6 months</option>
+          <option value="9">Last 9 months</option>
+          <option value="12">Last 12 months</option>
+        </select>
+      </div>
+
+      <div class="filter-field">
+        <label for="departmentFilter">Department</label>
+
+        <select
+          id="departmentFilter"
+          [(ngModel)]="selectedDepartment"
+        >
+          @for (department of departments; track department) {
+            <option [value]="department">
+              {{ department }}
+            </option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-filter-card__footer">
+    <span>
+      Showing data for
+      <strong>{{ selectedDepartment }}</strong>
+      during the
+      <strong>{{ periodLabel }}</strong>.
+    </span>
+
+    <span>
+      Last generated: {{ generatedAt }}
+    </span>
+  </div>
+</section>
+
+<section class="report-statistics" aria-label="Report summary">
+  <article class="report-statistic-card report-statistic-card--submitted">
+    <div class="report-statistic-card__top">
+      <p>Requests Submitted</p>
+      <span class="report-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ summary.submitted }}</strong>
+
+    <small>
+      Total requests created during this period
+    </small>
+  </article>
+
+  <article class="report-statistic-card report-statistic-card--resolved">
+    <div class="report-statistic-card__top">
+      <p>Requests Resolved</p>
+      <span class="report-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ summary.resolved }}</strong>
+
+    <small>
+      {{ getPercentage(summary.resolved, summary.submitted) }}%
+      resolution rate
+    </small>
+  </article>
+
+  <article class="report-statistic-card report-statistic-card--sla">
+    <div class="report-statistic-card__top">
+      <p>SLA Compliance</p>
+      <span class="report-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ summary.slaRate }}%</strong>
+
+    <small>
+      Requests completed within the SLA target
+    </small>
+  </article>
+
+  <article class="report-statistic-card report-statistic-card--time">
+    <div class="report-statistic-card__top">
+      <p>Average Resolution</p>
+      <span class="report-statistic-card__indicator"></span>
+    </div>
+
+    <strong>{{ formatHours(summary.averageResolutionHours) }}</strong>
+
+    <small>
+      Average time taken to resolve requests
+    </small>
+  </article>
+</section>
+
+<section class="report-grid report-grid--primary">
+  <article class="content-card trend-card">
+    <div class="content-card__header">
+      <div>
+        <h2>Request Trends</h2>
+
+        <p>
+          Monthly submitted and resolved request volume.
+        </p>
+      </div>
+
+      <div class="chart-legend" aria-label="Chart legend">
+        <span>
+          <i class="legend-dot legend-dot--submitted"></i>
+          Submitted
+        </span>
+
+        <span>
+          <i class="legend-dot legend-dot--resolved"></i>
+          Resolved
+        </span>
+      </div>
+    </div>
+
+    <div class="trend-chart" aria-label="Monthly request trend chart">
+      <div class="trend-chart__plot">
+        <div class="trend-chart__grid-line trend-chart__grid-line--100">
+          <span>{{ chartMaximum }}</span>
+        </div>
+
+        <div class="trend-chart__grid-line trend-chart__grid-line--75">
+          <span>{{ getAxisValue(0.75) }}</span>
+        </div>
+
+        <div class="trend-chart__grid-line trend-chart__grid-line--50">
+          <span>{{ getAxisValue(0.5) }}</span>
+        </div>
+
+        <div class="trend-chart__grid-line trend-chart__grid-line--25">
+          <span>{{ getAxisValue(0.25) }}</span>
+        </div>
+
+        <div class="trend-chart__grid-line trend-chart__grid-line--0">
+          <span>0</span>
+        </div>
+
+        <div class="trend-chart__bars">
+          @for (month of filteredMonthlyData; track month.label) {
+            <div class="trend-chart__group">
+              <div class="trend-chart__bar-container">
+                <div
+                  class="trend-bar trend-bar--submitted"
+                  [style.height.%]="getBarHeight(month.submitted)"
+                  [attr.title]="
+                    month.label + ': ' + month.submitted + ' submitted'
+                  "
+                >
+                  <span class="trend-bar__value">
+                    {{ month.submitted }}
+                  </span>
+                </div>
+
+                <div
+                  class="trend-bar trend-bar--resolved"
+                  [style.height.%]="getBarHeight(month.resolved)"
+                  [attr.title]="
+                    month.label + ': ' + month.resolved + ' resolved'
+                  "
+                >
+                  <span class="trend-bar__value">
+                    {{ month.resolved }}
+                  </span>
+                </div>
+              </div>
+
+              <span class="trend-chart__label">
+                {{ month.shortLabel }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="content-card status-card">
+    <div class="content-card__header">
+      <div>
+        <h2>Request Status</h2>
+
+        <p>Current request distribution by status.</p>
+      </div>
+    </div>
+
+    <div class="status-overview">
+      <div
+        class="status-donut"
+        [style.--resolved]="statusPercentages.resolved"
+        [style.--progress]="statusPercentages.inProgress"
+        [style.--open]="statusPercentages.open"
+      >
+        <div class="status-donut__center">
+          <strong>{{ summary.submitted }}</strong>
+          <span>Total</span>
+        </div>
+      </div>
+
+      <div class="status-list">
+        @for (status of statusData; track status.label) {
+          <div class="status-list__item">
+            <div class="status-list__label">
+              <span
+                [class]="'legend-dot legend-dot--' + status.type"
+              ></span>
+
+              <span>{{ status.label }}</span>
+            </div>
+
+            <div class="status-list__value">
+              <strong>{{ status.value }}</strong>
+              <span>
+                {{ getPercentage(status.value, summary.submitted) }}%
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="report-grid report-grid--secondary">
+  <article class="content-card category-card">
+    <div class="content-card__header">
+      <div>
+        <h2>Requests by Category</h2>
+
+        <p>
+          Distribution of submitted requests by service type.
+        </p>
+      </div>
+    </div>
+
+    <div class="category-list">
+      @for (category of categoryData; track category.label) {
+        <div class="category-item">
+          <div class="category-item__header">
+            <div>
+              <span
+                [class]="
+                  'category-icon category-icon--' + category.type
+                "
+                aria-hidden="true"
+              >
+                {{ category.icon }}
+              </span>
+
+              <strong>{{ category.label }}</strong>
+            </div>
+
+            <span>{{ category.value }} requests</span>
+          </div>
+
+          <div
+            class="progress-track"
+            role="progressbar"
+            [attr.aria-label]="category.label"
+            [attr.aria-valuenow]="
+              getPercentage(category.value, summary.submitted)
+            "
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <span
+              [class]="'progress-fill progress-fill--' + category.type"
+              [style.width.%]="
+                getPercentage(category.value, summary.submitted)
+              "
+            ></span>
+          </div>
+
+          <small>
+            {{ getPercentage(category.value, summary.submitted) }}%
+            of total requests
+          </small>
+        </div>
+      }
+    </div>
+  </article>
+
+  <article class="content-card sla-card">
+    <div class="content-card__header">
+      <div>
+        <h2>SLA Performance</h2>
+
+        <p>
+          Performance against service-level response targets.
+        </p>
+      </div>
+
+      <span
+        class="sla-score"
+        [class.sla-score--warning]="summary.slaRate < 90"
+      >
+        {{ summary.slaRate }}%
+      </span>
+    </div>
+
+    <div class="sla-list">
+      @for (item of scaledSlaItems; track item.label) {
+        <div class="sla-item">
+          <div class="sla-item__header">
+            <div>
+              <strong>{{ item.label }}</strong>
+              <span>{{ item.target }}</span>
+            </div>
+
+            <strong>{{ item.compliance }}%</strong>
+          </div>
+
+          <div
+            class="progress-track"
+            role="progressbar"
+            [attr.aria-label]="item.label"
+            [attr.aria-valuenow]="item.compliance"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <span
+              class="progress-fill progress-fill--sla"
+              [class.progress-fill--warning]="item.compliance < 90"
+              [style.width.%]="item.compliance"
+            ></span>
+          </div>
+
+          <div class="sla-item__footer">
+            <span>{{ item.met }} met target</span>
+            <span>{{ item.missed }} missed target</span>
+          </div>
+        </div>
+      }
+    </div>
+  </article>
+</section>
+
+<section class="content-card monthly-report-card">
+  <div class="content-card__header">
+    <div>
+      <h2>Monthly Performance</h2>
+
+      <p>
+        Detailed service performance for the selected reporting period.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="text-link report-download-link"
+      (click)="downloadCsv()"
+    >
+      Download data
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="data-table monthly-report-table">
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>Submitted</th>
+          <th>Resolved</th>
+          <th>Pending</th>
+          <th>Overdue</th>
+          <th>Average Resolution</th>
+          <th>SLA Compliance</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (month of filteredMonthlyData; track month.label) {
+          <tr>
+            <td>
+              <strong class="month-name">
+                {{ month.label }}
+              </strong>
+            </td>
+
+            <td>{{ month.submitted }}</td>
+
+            <td>
+              <span class="report-value report-value--resolved">
+                {{ month.resolved }}
+              </span>
+            </td>
+
+            <td>
+              {{ getPendingCount(month) }}
+            </td>
+
+            <td>
+              <span
+                class="report-value"
+                [class.report-value--overdue]="month.overdue > 0"
+              >
+                {{ month.overdue }}
+              </span>
+            </td>
+
+            <td>
+              {{ formatHours(month.averageResolutionHours) }}
+            </td>
+
+            <td>
+              <div class="table-sla">
+                <span
+                  [class]="getSlaClass(month.slaRate)"
+                >
+                  {{ month.slaRate }}%
+                </span>
+
+                <div class="table-sla__track">
+                  <span
+                    [style.width.%]="month.slaRate"
+                    [class.table-sla__fill--warning]="month.slaRate < 90"
+                  ></span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-footer">
+    <p>
+      Reporting period:
+      <strong>{{ periodLabel }}</strong>
+    </p>
+
+    <p>
+      Department:
+      <strong>{{ selectedDepartment }}</strong>
+    </p>
+  </div>
+</section>
+
+@if (notificationMessage) {
+  <div class="report-notification" role="status">
+    <span class="report-notification__icon" aria-hidden="true">
+      ✓
+    </span>
+
+    <div>
+      <strong>Report generated</strong>
+      <p>{{ notificationMessage }}</p>
+    </div>
+
+    <button
+      type="button"
+      class="report-notification__close"
+      aria-label="Close notification"
+      (click)="closeNotification()"
+    >
+      ×
+    </button>
+  </div>
+}

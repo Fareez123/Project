@@ -1,0 +1,55 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      F
+    </div>
+
+    <div>
+      <h1>FlowDesk</h1>
+      <p>Request Management</p>
+    </div>
+  </div>
+
+  <nav
+    class="sidebar-navigation"
+    aria-label="Main navigation"
+  >
+    <p class="navigation-title">
+      MAIN MENU
+    </p>
+
+    @for (item of navigationItems; track item.route) {
+      <a
+        class="navigation-link"
+        [routerLink]="item.route"
+        routerLinkActive="navigation-link--active"
+        [routerLinkActiveOptions]="{ exact: item.exact }"
+      >
+        <span class="navigation-icon">
+          {{ item.icon }}
+        </span>
+
+        <span>
+          {{ item.label }}
+        </span>
+      </a>
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="help-card">
+      <strong>Need assistance?</strong>
+
+      <p>
+        Contact the system administrator.
+      </p>
+    </div>
+
+    <a
+      routerLink="/login"
+      class="logout-link"
+    >
+      Log out
+    </a>
+  </div>
+</aside>

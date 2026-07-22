@@ -1,0 +1,265 @@
+<section class="page-heading">
+  <div>
+    <p class="page-eyebrow">NEW REQUEST</p>
+    <h1>Create Request</h1>
+    <p class="page-description">
+      Submit a new service request and provide the information needed by the
+      support team.
+    </p>
+  </div>
+
+  <a routerLink="/requests" class="button button--secondary">
+    Back to Requests
+  </a>
+</section>
+
+<form class="request-layout">
+  <section class="content-card request-form-card">
+    <div class="content-card__header">
+      <div>
+        <h2>Request Information</h2>
+        <p>Enter the details of the service or assistance you require.</p>
+      </div>
+
+      <span class="required-notice">
+        <span aria-hidden="true">*</span>
+        Required fields
+      </span>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__heading">
+        <span class="form-section__number">1</span>
+
+        <div>
+          <h3>General Details</h3>
+          <p>Provide the basic information about your request.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="requestType">
+            Request Type
+            <span aria-hidden="true">*</span>
+          </label>
+
+          <select id="requestType" name="requestType" required>
+            <option value="" selected disabled>
+              Select request type
+            </option>
+            <option value="it-support">IT Support</option>
+            <option value="access-request">Access Request</option>
+            <option value="equipment">Equipment Request</option>
+            <option value="facility">Facility Request</option>
+            <option value="general">General Request</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="priority">
+            Priority
+            <span aria-hidden="true">*</span>
+          </label>
+
+          <select id="priority" name="priority" required>
+            <option value="" selected disabled>
+              Select priority
+            </option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="urgent">Urgent</option>
+          </select>
+
+          <small>
+            Choose urgent only when work is completely blocked.
+          </small>
+        </div>
+
+        <div class="form-field form-field--full">
+          <label for="requestTitle">
+            Request Title
+            <span aria-hidden="true">*</span>
+          </label>
+
+          <input
+            id="requestTitle"
+            name="requestTitle"
+            type="text"
+            maxlength="100"
+            placeholder="Example: Unable to access company email"
+            required
+          />
+
+          <small>
+            Use a short and specific title that describes the issue.
+          </small>
+        </div>
+
+        <div class="form-field form-field--full">
+          <label for="requestDescription">
+            Description
+            <span aria-hidden="true">*</span>
+          </label>
+
+          <textarea
+            id="requestDescription"
+            name="requestDescription"
+            rows="7"
+            maxlength="1000"
+            placeholder="Describe the issue, when it started, and any troubleshooting steps you have already tried."
+            required
+          ></textarea>
+
+          <div class="field-footer">
+            <small>
+              Include relevant error messages and affected systems.
+            </small>
+
+            <small>Maximum 1,000 characters</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__heading">
+        <span class="form-section__number">2</span>
+
+        <div>
+          <h3>Additional Information</h3>
+          <p>Help the team assign and resolve your request correctly.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="department">Department</label>
+
+          <select id="department" name="department">
+            <option value="" selected disabled>
+              Select department
+            </option>
+            <option value="information-technology">
+              Information Technology
+            </option>
+            <option value="human-resources">Human Resources</option>
+            <option value="finance">Finance</option>
+            <option value="operations">Operations</option>
+            <option value="administration">Administration</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="requiredDate">Required Date</label>
+
+          <input
+            id="requiredDate"
+            name="requiredDate"
+            type="date"
+          />
+
+          <small>
+            Select a preferred completion date when applicable.
+          </small>
+        </div>
+
+        <div class="form-field form-field--full">
+          <label for="location">Location or Workstation</label>
+
+          <input
+            id="location"
+            name="location"
+            type="text"
+            placeholder="Example: Level 4, Finance Department, Workstation F-12"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-section__heading">
+        <span class="form-section__number">3</span>
+
+        <div>
+          <h3>Attachments</h3>
+          <p>Add screenshots or documents that may help resolve the request.</p>
+        </div>
+      </div>
+
+      <label class="upload-area" for="requestAttachment">
+        <span class="upload-area__icon" aria-hidden="true">
+          ↑
+        </span>
+
+        <span class="upload-area__content">
+          <strong>Upload supporting files</strong>
+          <span>
+            Drag and drop files here or select files from your device.
+          </span>
+          <small>PNG, JPG or PDF. Maximum file size: 10 MB.</small>
+        </span>
+
+        <span class="button button--secondary upload-area__button">
+          Select Files
+        </span>
+
+        <input
+          id="requestAttachment"
+          name="requestAttachment"
+          type="file"
+          accept=".png,.jpg,.jpeg,.pdf"
+          multiple
+        />
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <a routerLink="/requests" class="button button--secondary">
+        Cancel
+      </a>
+
+      <button type="submit" class="button button--primary">
+        Submit Request
+      </button>
+    </div>
+  </section>
+
+  <aside class="request-sidebar">
+    <section class="content-card requester-card">
+      <div class="requester-card__header">
+        <span class="requester-avatar" aria-hidden="true">MF</span>
+
+        <div>
+          <small>Submitting as</small>
+          <strong>Muhammad Fareez</strong>
+          <span>Information Technology</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-card guidance-card">
+      <span class="guidance-card__icon" aria-hidden="true">i</span>
+
+      <div>
+        <h2>Before submitting</h2>
+
+        <ul>
+          <li>Use a clear and specific request title.</li>
+          <li>Explain the expected and actual result.</li>
+          <li>Include screenshots of any error messages.</li>
+          <li>Avoid submitting the same request more than once.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="content-card response-card">
+      <p>Expected response</p>
+      <strong>Within 1 business day</strong>
+      <span>
+        Urgent requests may be reviewed sooner based on impact.
+      </span>
+    </section>
+  </aside>
+</form>
