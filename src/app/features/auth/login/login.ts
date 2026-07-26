@@ -47,13 +47,6 @@ export class Login {
     }
 
     this.isSubmitting = true;
-
-    /*
-     * Replace this timeout with your authentication API call.
-     *
-     * Example:
-     * this.authService.login(this.credentials).subscribe(...)
-     */
     window.setTimeout(() => {
       const loginSuccessful = true;
 
