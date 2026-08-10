@@ -1,96 +1,188 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-interface DashboardStatistic {
-  label: string;
-  value: number;
-  description: string;
-  type: 'default' | 'pending' | 'approved' | 'rejected';
+interface CurrentUser {
+  name: string;
+  firstName: string;
+  role: string;
+  location: string;
+  bio: string;
+  profileStrength: number;
+  projects: number;
+  verifiedSkills: number;
+  collaborators: number;
 }
 
-interface RecentRequest {
-  id: string;
+interface CareerIntent {
   title: string;
-  type: string;
-  requester: string;
-  submittedDate: string;
-  priority: 'Low' | 'Medium' | 'High';
-  status: 'Pending' | 'Approved' | 'Rejected';
+  description: string;
+  offers: string[];
+  wants: string[];
+  matches: number;
+}
+
+interface MutualMatch {
+  id: number;
+  name: string;
+  firstName: string;
+  role: string;
+  location: string;
+  match: number;
+  description: string;
+  youOffer: string;
+  theyOffer: string;
+  sharedGoal: string;
+}
+
+interface CollaborationOpportunity {
+  id: number;
+  owner: string;
+  ownerRole: string;
+  title: string;
+  description: string;
+  lookingFor: string;
+  commitment: string;
+  level: string;
+  match: number;
+  skills: string[];
+}
+
+interface SuggestedPerson {
+  id: number;
+  name: string;
+  role: string;
+  match: number;
 }
 
 @Component({
   selector: 'app-dashboard',
-  imports: [RouterLink],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css'
 })
 export class Dashboard {
-  statistics: DashboardStatistic[] = [
+  notificationCount = 3;
+
+  currentUser: CurrentUser = {
+    name: 'Muhammad Fareez',
+    firstName: 'Fareez',
+    role: 'Junior Software Developer',
+    location: 'Selangor, Malaysia',
+    bio:
+      'Building full-stack applications and growing my backend engineering skills.',
+    profileStrength: 82,
+    projects: 5,
+    verifiedSkills: 8,
+    collaborators: 7
+  };
+
+  currentIntent: CareerIntent = {
+    title: 'Build and deploy a production-ready backend project',
+    description:
+      'I want to gain practical deployment experience by building something real with people who have complementary skills.',
+    offers: [
+      'Angular',
+      'Java',
+      'Spring Boot'
+    ],
+    wants: [
+      'Docker',
+      'CI/CD',
+      'Cloud'
+    ],
+    matches: 14
+  };
+
+  mutualMatches: MutualMatch[] = [
     {
-      label: 'Total Requests',
-      value: 124,
-      description: 'All requests in the system',
-      type: 'default'
+      id: 1,
+      name: 'Amir Hakim',
+      firstName: 'Amir',
+      role: 'Junior DevOps Engineer',
+      location: 'Kuala Lumpur, Malaysia',
+      match: 96,
+      description:
+        'Amir wants more frontend experience while you are looking to strengthen your deployment skills.',
+      youOffer: 'Angular',
+      theyOffer: 'Docker & CI/CD',
+      sharedGoal:
+        'Build and deploy a full-stack application'
     },
     {
-      label: 'Pending Approval',
-      value: 18,
-      description: 'Waiting for review',
-      type: 'pending'
-    },
-    {
-      label: 'Approved',
-      value: 92,
-      description: 'Successfully approved',
-      type: 'approved'
-    },
-    {
-      label: 'Rejected',
-      value: 14,
-      description: 'Requests not approved',
-      type: 'rejected'
+      id: 2,
+      name: 'Sarah Lim',
+      firstName: 'Sarah',
+      role: 'Backend Developer',
+      location: 'Selangor, Malaysia',
+      match: 91,
+      description:
+        'Sarah is looking for someone with Angular experience and can help you gain exposure to cloud deployment.',
+      youOffer: 'Angular',
+      theyOffer: 'AWS Deployment',
+      sharedGoal:
+        'Build production-ready software together'
     }
   ];
 
-  recentRequests: RecentRequest[] = [
+  collaborationOpportunities:
+    CollaborationOpportunity[] = [
+      {
+        id: 101,
+        owner: 'Daniel Tan',
+        ownerRole: 'Junior Backend Developer',
+        title:
+          'Build a portfolio analytics platform',
+        description:
+          'I am building a platform that helps developers analyse their portfolio and I need someone to help build the Angular frontend.',
+        lookingFor: 'Angular Developer',
+        commitment: '3–4 hrs / week',
+        level: 'Junior friendly',
+        match: 94,
+        skills: [
+          'Angular',
+          'TypeScript',
+          'REST API',
+          'Spring Boot'
+        ]
+      }
+    ];
+
+  suggestedPeople: SuggestedPerson[] = [
     {
-      id: 'REQ-2026-001',
-      title: 'Finance System Access',
-      type: 'System Access',
-      requester: 'Ahmad Firdaus',
-      submittedDate: '10 July 2026',
-      priority: 'High',
-      status: 'Pending'
+      id: 10,
+      name: 'Amir Hakim',
+      role: 'Junior DevOps Engineer',
+      match: 96
     },
     {
-      id: 'REQ-2026-002',
-      title: 'New Office Laptop',
-      type: 'Equipment',
-      requester: 'Siti Aisyah',
-      submittedDate: '9 July 2026',
-      priority: 'Medium',
-      status: 'Approved'
+      id: 11,
+      name: 'Sarah Lim',
+      role: 'Backend Developer',
+      match: 91
     },
     {
-      id: 'REQ-2026-003',
-      title: 'Air Conditioner Maintenance',
-      type: 'Maintenance',
-      requester: 'Daniel Lee',
-      submittedDate: '8 July 2026',
-      priority: 'Low',
-      status: 'Rejected'
+      id: 12,
+      name: 'Jason Wong',
+      role: 'Cloud Engineer',
+      match: 88
+    },
+    {
+      id: 13,
+      name: 'Nur Izzati',
+      role: 'Software Engineer',
+      match: 85
     }
   ];
 
-  getStatusClass(status: RecentRequest['status']): string {
-    return `status-badge status-${status.toLowerCase()}`;
-  }
-
-  getPriorityClass(priority: RecentRequest['priority']): string {
-    return `priority-badge priority-${priority.toLowerCase()}`;
-  }
-
-  getStatisticClass(type: DashboardStatistic['type']): string {
-    return `statistic-card statistic-card--${type}`;
+  getInitials(name: string): string {
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word.charAt(0))
+      .join('')
+      .toUpperCase();
   }
 }

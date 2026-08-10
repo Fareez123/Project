@@ -37,6 +37,20 @@ export class Login {
   formSubmitted = false;
   errorMessage = '';
 
+  constructor() {
+    const rememberedEmail =
+      localStorage.getItem(
+        'careerflowRememberedEmail'
+      );
+
+    if (rememberedEmail) {
+      this.credentials.email =
+        rememberedEmail;
+
+      this.credentials.rememberMe = true;
+    }
+  }
+
   login(form: NgForm): void {
     this.formSubmitted = true;
     this.errorMessage = '';
@@ -47,32 +61,45 @@ export class Login {
     }
 
     this.isSubmitting = true;
+
+    /*
+     * Temporary simulated login.
+     * Replace with AuthService later.
+     */
     window.setTimeout(() => {
       const loginSuccessful = true;
 
       if (!loginSuccessful) {
         this.isSubmitting = false;
+
         this.errorMessage =
           'The email address or password you entered is incorrect.';
+
         return;
       }
 
       if (this.credentials.rememberMe) {
         localStorage.setItem(
-          'flowdeskRememberedEmail',
+          'careerflowRememberedEmail',
           this.credentials.email
         );
       } else {
-        localStorage.removeItem('flowdeskRememberedEmail');
+        localStorage.removeItem(
+          'careerflowRememberedEmail'
+        );
       }
 
       this.isSubmitting = false;
-      this.router.navigate(['/dashboard']);
+
+      this.router.navigate([
+        '/dashboard'
+      ]);
     }, 800);
   }
 
   togglePasswordVisibility(): void {
-    this.showPassword = !this.showPassword;
+    this.showPassword =
+      !this.showPassword;
   }
 
   clearError(): void {
