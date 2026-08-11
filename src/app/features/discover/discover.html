@@ -1,0 +1,746 @@
+<div class="discover-page">
+
+  <div class="discover-container">
+
+    <!-- PAGE HEADER -->
+    <section class="discover-heading">
+
+      <div>
+        <h1>Discover</h1>
+
+        <p>
+          Find people who complement your skills,
+          goals and professional interests.
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- SEARCH -->
+    <section class="discover-search">
+
+      <div class="search-box">
+
+        <span
+          class="search-icon"
+          aria-hidden="true"
+        >
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          placeholder="Search people, skills or goals..."
+          [(ngModel)]="searchQuery"
+        />
+
+      </div>
+
+      <button
+        type="button"
+        class="filter-button"
+        [class.filter-button--active]="showFilters"
+        (click)="toggleFilters()"
+      >
+        <span>≡</span>
+
+        Filters
+      </button>
+
+    </section>
+
+
+    <!-- FILTERS -->
+    @if (showFilters) {
+
+      <section class="filter-panel">
+
+        <div class="filter-field">
+          <label for="skill">
+            Skill
+          </label>
+
+          <select
+            id="skill"
+            [(ngModel)]="selectedSkill"
+          >
+            <option value="">
+              Any skill
+            </option>
+
+            @for (
+              skill of skills;
+              track skill
+            ) {
+              <option [value]="skill">
+                {{ skill }}
+              </option>
+            }
+          </select>
+        </div>
+
+
+        <div class="filter-field">
+          <label for="experience">
+            Experience
+          </label>
+
+          <select
+            id="experience"
+            [(ngModel)]="selectedLevel"
+          >
+            <option value="">
+              Any level
+            </option>
+
+            @for (
+              level of experienceLevels;
+              track level
+            ) {
+              <option [value]="level">
+                {{ level }}
+              </option>
+            }
+          </select>
+        </div>
+
+
+        <div class="filter-field">
+          <label for="location">
+            Location
+          </label>
+
+          <input
+            id="location"
+            type="text"
+            placeholder="e.g. Kuala Lumpur"
+            [(ngModel)]="selectedLocation"
+          />
+        </div>
+
+
+        <button
+          type="button"
+          class="clear-filter"
+          (click)="clearFilters()"
+        >
+          Clear filters
+        </button>
+
+      </section>
+
+    }
+
+
+    <!-- TABS -->
+    <nav
+      class="discover-tabs"
+      aria-label="Discover categories"
+    >
+
+      <button
+        type="button"
+        [class.discover-tab--active]="
+          activeTab === 'recommended'
+        "
+        class="discover-tab"
+        (click)="setTab('recommended')"
+      >
+        Recommended
+      </button>
+
+
+      <button
+        type="button"
+        [class.discover-tab--active]="
+          activeTab === 'people'
+        "
+        class="discover-tab"
+        (click)="setTab('people')"
+      >
+        People
+      </button>
+
+
+      <button
+        type="button"
+        [class.discover-tab--active]="
+          activeTab === 'collaborations'
+        "
+        class="discover-tab"
+        (click)="setTab('collaborations')"
+      >
+        Collaborations
+      </button>
+
+
+      <button
+        type="button"
+        [class.discover-tab--active]="
+          activeTab === 'mentors'
+        "
+        class="discover-tab"
+        (click)="setTab('mentors')"
+      >
+        Mentors
+      </button>
+
+    </nav>
+
+
+    <!-- =========================================
+         RECOMMENDED / PEOPLE
+    ========================================== -->
+    @if (
+      activeTab === 'recommended' ||
+      activeTab === 'people'
+    ) {
+
+      <section class="results-section">
+
+        <div class="results-heading">
+
+          <div>
+            <h2>
+              {{
+                activeTab === 'recommended'
+                  ? 'Best matches for you'
+                  : 'People'
+              }}
+            </h2>
+
+            <p>
+              {{ filteredPeople.length }}
+              people found
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="people-grid">
+
+          @for (
+            person of filteredPeople;
+            track person.id
+          ) {
+
+            <article class="person-card">
+
+              <div class="person-card__top">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    person.id
+                  ]"
+                  class="person-avatar"
+                >
+                  {{
+                    getInitials(
+                      person.name
+                    )
+                  }}
+                </a>
+
+
+                <div class="person-main-info">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      person.id
+                    ]"
+                    class="person-name"
+                  >
+                    {{ person.name }}
+                  </a>
+
+                  <p>
+                    {{ person.role }}
+                  </p>
+
+                  <span>
+                    {{ person.location }}
+                  </span>
+
+                </div>
+
+
+                <span class="match-score">
+                  {{ person.match }}%
+                </span>
+
+              </div>
+
+
+              <p class="person-bio">
+                {{ person.bio }}
+              </p>
+
+
+              <!-- MUTUAL VALUE -->
+              <div class="mutual-value">
+
+                <div>
+
+                  <span class="mutual-label">
+                    THEY CAN HELP YOU WITH
+                  </span>
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of person.offers;
+                      track skill
+                    ) {
+                      <span
+                        class="skill-tag skill-tag--offer"
+                      >
+                        {{ skill }}
+                      </span>
+                    }
+
+                  </div>
+
+                </div>
+
+
+                <div class="mutual-divider">
+                  <span>↕</span>
+                </div>
+
+
+                <div>
+
+                  <span class="mutual-label">
+                    YOU CAN HELP THEM WITH
+                  </span>
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of person.wants;
+                      track skill
+                    ) {
+                      <span
+                        class="skill-tag skill-tag--learn"
+                      >
+                        {{ skill }}
+                      </span>
+                    }
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- SHARED GOAL -->
+              <div class="shared-goal">
+
+                <span
+                  aria-hidden="true"
+                >
+                  ✦
+                </span>
+
+                <div>
+                  <small>
+                    SHARED GOAL
+                  </small>
+
+                  <strong>
+                    {{ person.sharedGoal }}
+                  </strong>
+                </div>
+
+              </div>
+
+
+              <!-- AVAILABLE FOR -->
+              <div class="availability">
+
+                <span>
+                  Available for
+                </span>
+
+                <div>
+
+                  @for (
+                    type of person.availableFor;
+                    track type
+                  ) {
+                    <span>
+                      {{ type }}
+                    </span>
+                  }
+
+                </div>
+
+              </div>
+
+
+              <div class="person-card__actions">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    person.id
+                  ]"
+                  class="secondary-button"
+                >
+                  View profile
+                </a>
+
+                <button
+                  type="button"
+                  class="primary-button"
+                  [class.connected-button]="
+                    person.connected
+                  "
+                  (click)="connect(person)"
+                >
+                  {{
+                    person.connected
+                      ? 'Request sent'
+                      : 'Connect with purpose'
+                  }}
+                </button>
+
+              </div>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <span>◎</span>
+
+              <h3>
+                No people found
+              </h3>
+
+              <p>
+                Try changing your search
+                or filters.
+              </p>
+
+              <button
+                type="button"
+                (click)="clearFilters()"
+              >
+                Clear filters
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =========================================
+         COLLABORATIONS
+    ========================================== -->
+    @if (
+      activeTab ===
+      'collaborations'
+    ) {
+
+      <section class="results-section">
+
+        <div class="results-heading">
+
+          <div>
+            <h2>
+              Collaboration opportunities
+            </h2>
+
+            <p>
+              Find something worth
+              building together.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="collaboration-list">
+
+          @for (
+            opportunity of collaborations;
+            track opportunity.id
+          ) {
+
+            <article class="collaboration-card">
+
+              <div class="collaboration-header">
+
+                <div class="collaboration-owner">
+
+                  <span class="small-avatar">
+                    {{
+                      getInitials(
+                        opportunity.owner
+                      )
+                    }}
+                  </span>
+
+                  <div>
+                    <strong>
+                      {{
+                        opportunity.owner
+                      }}
+                    </strong>
+
+                    <span>
+                      {{
+                        opportunity.ownerRole
+                      }}
+                    </span>
+                  </div>
+
+                </div>
+
+
+                <span class="match-score">
+                  {{
+                    opportunity.match
+                  }}%
+                </span>
+
+              </div>
+
+
+              <span class="section-label">
+                COLLABORATION
+              </span>
+
+              <h3>
+                {{ opportunity.title }}
+              </h3>
+
+              <p class="collaboration-description">
+                {{
+                  opportunity.description
+                }}
+              </p>
+
+
+              <div class="collaboration-meta">
+
+                <div>
+                  <span>Commitment</span>
+
+                  <strong>
+                    {{
+                      opportunity.commitment
+                    }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Experience</span>
+
+                  <strong>
+                    {{
+                      opportunity.experienceLevel
+                    }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Interested</span>
+
+                  <strong>
+                    {{
+                      opportunity.applicants
+                    }}
+                    people
+                  </strong>
+                </div>
+
+              </div>
+
+
+              <div class="skill-list">
+
+                @for (
+                  skill of opportunity.skills;
+                  track skill
+                ) {
+                  <span class="skill-tag">
+                    {{ skill }}
+                  </span>
+                }
+
+              </div>
+
+
+              <div class="collaboration-actions">
+
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="
+                    toggleSaveCollaboration(
+                      opportunity
+                    )
+                  "
+                >
+                  {{
+                    opportunity.saved
+                      ? 'Saved'
+                      : 'Save'
+                  }}
+                </button>
+
+                <a
+                  [routerLink]="[
+                    '/collaborations',
+                    opportunity.id
+                  ]"
+                  class="primary-button"
+                >
+                  View collaboration
+                </a>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =========================================
+         MENTORS
+    ========================================== -->
+    @if (
+      activeTab === 'mentors'
+    ) {
+
+      <section class="mentor-section">
+
+        <div class="mentor-message">
+
+          <span class="mentor-icon">
+            ✦
+          </span>
+
+          <div>
+            <span class="section-label">
+              MENTORSHIP
+            </span>
+
+            <h2>
+              Learn from someone who's
+              already been there.
+            </h2>
+
+            <p>
+              CareerFlow mentorship is focused
+              on practical guidance rather than
+              follower counts or popularity.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="mentor-grid">
+
+          @for (
+            person of people;
+            track person.id
+          ) {
+
+            @if (
+              person.availableFor.includes(
+                'Mentoring'
+              )
+            ) {
+
+              <article class="mentor-card">
+
+                <span class="mentor-avatar">
+                  {{
+                    getInitials(
+                      person.name
+                    )
+                  }}
+                </span>
+
+                <div>
+                  <h3>
+                    {{ person.name }}
+                  </h3>
+
+                  <p>
+                    {{ person.role }}
+                  </p>
+
+                  <span>
+                    {{ person.location }}
+                  </span>
+                </div>
+
+
+                <p class="mentor-bio">
+                  {{ person.bio }}
+                </p>
+
+
+                <div class="skill-list">
+
+                  @for (
+                    skill of person.offers;
+                    track skill
+                  ) {
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+                  }
+
+                </div>
+
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    person.id
+                  ]"
+                  class="mentor-action"
+                >
+                  View mentor
+                  <span>→</span>
+                </a>
+
+              </article>
+
+            }
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </div>
+
+</div>

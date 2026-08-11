@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { Login } from './features/auth/login/login';
 import { Dashboard } from './features/dashboard/dashboard';
 import { MainLayout } from './layouts/main-layout/main-layout';
+import { Discover } from './features/discover/discover';
 
 export const routes: Routes = [
   // Authentication
@@ -19,7 +20,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: Dashboard
-      }
+      },
+      {
+      path: 'discover',
+      component: Discover
+    }
     ]
   },
 
