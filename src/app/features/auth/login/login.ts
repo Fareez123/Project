@@ -24,7 +24,8 @@ interface LoginCredentials {
   styleUrl: './login.css'
 })
 export class Login {
-  private readonly router = inject(Router);
+  private readonly router =
+    inject(Router);
 
   credentials: LoginCredentials = {
     email: '',
@@ -33,8 +34,11 @@ export class Login {
   };
 
   showPassword = false;
+
   isSubmitting = false;
+
   formSubmitted = false;
+
   errorMessage = '';
 
   constructor() {
@@ -47,54 +51,67 @@ export class Login {
       this.credentials.email =
         rememberedEmail;
 
-      this.credentials.rememberMe = true;
+      this.credentials.rememberMe =
+        true;
     }
   }
 
-  login(form: NgForm): void {
+  login(
+    form: NgForm
+  ): void {
     this.formSubmitted = true;
     this.errorMessage = '';
 
-    if (form.invalid) {
-      form.control.markAllAsTouched();
+    /*
+     * For development:
+     * Any non-empty email/username
+     * and password are accepted.
+     */
+
+    if (
+      !this.credentials.email.trim() ||
+      !this.credentials.password.trim()
+    ) {
+      this.errorMessage =
+        'Please enter your email and password.';
+
       return;
     }
 
     this.isSubmitting = true;
 
-    /*
-     * Temporary simulated login.
-     * Replace with AuthService later.
-     */
-    window.setTimeout(() => {
-      const loginSuccessful = true;
+    window.setTimeout(
+      () => {
 
-      if (!loginSuccessful) {
+        if (
+          this.credentials.rememberMe
+        ) {
+          localStorage.setItem(
+            'careerflowRememberedEmail',
+            this.credentials.email
+          );
+        } else {
+          localStorage.removeItem(
+            'careerflowRememberedEmail'
+          );
+        }
+
+        /*
+         * Temporary mock login state.
+         */
+        localStorage.setItem(
+          'careerflowLoggedIn',
+          'true'
+        );
+
         this.isSubmitting = false;
 
-        this.errorMessage =
-          'The email address or password you entered is incorrect.';
-
-        return;
-      }
-
-      if (this.credentials.rememberMe) {
-        localStorage.setItem(
-          'careerflowRememberedEmail',
-          this.credentials.email
-        );
-      } else {
-        localStorage.removeItem(
-          'careerflowRememberedEmail'
-        );
-      }
-
-      this.isSubmitting = false;
-
-      this.router.navigate([
-        '/dashboard'
-      ]);
-    }, 800);
+        this.router.navigate([
+          '/dashboard'
+        ]);
+      },
+      500
+    );
   }
 
   togglePasswordVisibility(): void {

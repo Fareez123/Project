@@ -1,0 +1,1060 @@
+<div class="collaborate-page">
+
+  <div class="collaborate-container">
+
+    <!-- ======================================
+         PAGE HEADER
+    ======================================= -->
+    <section class="page-heading">
+
+      <div>
+        <h1>Collaborate</h1>
+
+        <p>
+          Build experience by working,
+          learning and creating evidence
+          together.
+        </p>
+      </div>
+
+
+      <button
+        type="button"
+        class="create-button"
+        (click)="setTab('opportunities')"
+      >
+        <span>+</span>
+
+        Find collaboration
+      </button>
+
+    </section>
+
+
+    <!-- ======================================
+         TABS
+    ======================================= -->
+    <nav
+      class="collaborate-tabs"
+      aria-label="Collaboration sections"
+    >
+
+      <button
+        type="button"
+        class="collaborate-tab"
+        [class.collaborate-tab--active]="
+          activeTab === 'my'
+        "
+        (click)="setTab('my')"
+      >
+        My Collaborations
+      </button>
+
+
+      <button
+        type="button"
+        class="collaborate-tab"
+        [class.collaborate-tab--active]="
+          activeTab === 'opportunities'
+        "
+        (click)="setTab('opportunities')"
+      >
+        Find Opportunities
+      </button>
+
+
+      <button
+        type="button"
+        class="collaborate-tab"
+        [class.collaborate-tab--active]="
+          activeTab === 'requests'
+        "
+        (click)="setTab('requests')"
+      >
+        Requests
+
+        @if (
+          pendingRequestsCount > 0
+        ) {
+          <span class="tab-count">
+            {{ pendingRequestsCount }}
+          </span>
+        }
+      </button>
+
+    </nav>
+
+
+    <!-- STATUS MESSAGE -->
+    @if (workspaceMessage) {
+
+      <div class="action-message">
+
+        <span>✓</span>
+
+        <p>
+          {{ workspaceMessage }}
+        </p>
+
+        <button
+          type="button"
+          aria-label="Close message"
+          (click)="workspaceMessage = ''"
+        >
+          ×
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ======================================
+         MY COLLABORATIONS
+    ======================================= -->
+    @if (
+      activeTab === 'my'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              My Collaborations
+            </h2>
+
+            <p>
+              Active work and skill exchanges
+              with your professional circle.
+            </p>
+          </div>
+
+
+          <span class="section-count">
+            {{
+              collaborations.length
+            }}
+            collaborations
+          </span>
+
+        </div>
+
+
+        <div class="collaboration-list">
+
+          @for (
+            collaboration of collaborations;
+            track collaboration.id
+          ) {
+
+            <article class="collaboration-card">
+
+              <!-- TOP -->
+              <div class="collaboration-card__header">
+
+                <div class="collaboration-owner">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      collaboration.collaboratorId
+                    ]"
+                    class="person-avatar"
+                  >
+                    {{
+                      getInitials(
+                        collaboration.collaborator
+                      )
+                    }}
+                  </a>
+
+
+                  <div>
+
+                    <span class="working-with">
+                      Collaborating with
+                    </span>
+
+                    <a
+                      [routerLink]="[
+                        '/people',
+                        collaboration.collaboratorId
+                      ]"
+                      class="person-name"
+                    >
+                      {{
+                        collaboration.collaborator
+                      }}
+                    </a>
+
+                    <p>
+                      {{
+                        collaboration.collaboratorRole
+                      }}
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                <span
+                  [class]="
+                    getStatusClass(
+                      collaboration.status
+                    )
+                  "
+                >
+                  {{
+                    collaboration.status
+                  }}
+                </span>
+
+              </div>
+
+
+              <!-- BODY -->
+              <div class="collaboration-card__body">
+
+                <span
+                  [class]="
+                    getTypeClass(
+                      collaboration.type
+                    )
+                  "
+                >
+                  {{ collaboration.type }}
+                </span>
+
+
+                <h3>
+                  {{ collaboration.title }}
+                </h3>
+
+
+                <p class="collaboration-description">
+                  {{
+                    collaboration.description
+                  }}
+                </p>
+
+
+                <!-- SKILLS -->
+                <div class="skill-list">
+
+                  @for (
+                    skill of collaboration.skills;
+                    track skill
+                  ) {
+
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+
+                  }
+
+                </div>
+
+
+                <!-- PROGRESS -->
+                <div class="progress-section">
+
+                  <div class="progress-heading">
+
+                    <span>
+                      Progress
+                    </span>
+
+                    <strong>
+                      {{
+                        collaboration.progress
+                      }}%
+                    </strong>
+
+                  </div>
+
+
+                  <div
+                    class="progress-track"
+                    role="progressbar"
+                    [attr.aria-valuenow]="
+                      collaboration.progress
+                    "
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+
+                    <span
+                      [style.width.%]="
+                        collaboration.progress
+                      "
+                    ></span>
+
+                  </div>
+
+                </div>
+
+
+                <!-- SKILL EXCHANGE DETAILS -->
+                @if (
+                  collaboration.type ===
+                  'Skill Exchange'
+                ) {
+
+                  <div class="skill-exchange">
+
+                    <div>
+
+                      <span>
+                        YOU TEACH
+                      </span>
+
+                      <strong>
+                        {{
+                          collaboration.youTeach
+                        }}
+                      </strong>
+
+                    </div>
+
+
+                    <div class="exchange-symbol">
+                      ↔
+                    </div>
+
+
+                    <div>
+
+                      <span>
+                        YOU LEARN
+                      </span>
+
+                      <strong>
+                        {{
+                          collaboration.youLearn
+                        }}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="session-progress">
+
+                    <strong>
+                      {{
+                        collaboration.sessionsCompleted
+                      }}
+                      /
+                      {{
+                        collaboration.totalSessions
+                      }}
+                    </strong>
+
+                    <span>
+                      sessions completed
+                    </span>
+
+                  </div>
+
+                }
+
+
+                <!-- ROLES -->
+                <div class="role-grid">
+
+                  <div>
+
+                    <span>
+                      Your role
+                    </span>
+
+                    <strong>
+                      {{
+                        collaboration.yourRole
+                      }}
+                    </strong>
+
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      {{
+                        collaboration.collaborator
+                      }}'s role
+                    </span>
+
+                    <strong>
+                      {{
+                        collaboration.collaboratorRoleInProject
+                      }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+
+                <!-- NEXT MILESTONE -->
+                <div class="milestone">
+
+                  <span class="milestone-icon">
+                    ✦
+                  </span>
+
+                  <div>
+
+                    <small>
+                      NEXT MILESTONE
+                    </small>
+
+                    <strong>
+                      {{
+                        collaboration.nextMilestone
+                      }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- FOOTER -->
+              <div class="collaboration-card__footer">
+
+                @if (
+                  collaboration.status ===
+                  'Completed'
+                ) {
+
+                  <button
+                    type="button"
+                    class="secondary-button"
+                  >
+                    View evidence
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="primary-button"
+                  >
+                    Verify collaborator
+                  </button>
+
+                } @else {
+
+                  <button
+                    type="button"
+                    class="secondary-button"
+                  >
+                    View details
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="primary-button"
+                    (click)="
+                      openWorkspace(
+                        collaboration
+                      )
+                    "
+                  >
+                    Open workspace
+                  </button>
+
+                }
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- ======================================
+         FIND OPPORTUNITIES
+    ======================================= -->
+    @if (
+      activeTab ===
+      'opportunities'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              Find something worth building
+            </h2>
+
+            <p>
+              Opportunities selected around
+              your skills and current goal.
+            </p>
+          </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="opportunity-search">
+
+          <div class="search-field">
+
+            <span aria-hidden="true">
+              ⌕
+            </span>
+
+            <input
+              type="search"
+              placeholder="Search projects or skills..."
+              [(ngModel)]="searchQuery"
+            />
+
+          </div>
+
+
+          <select
+            [(ngModel)]="selectedType"
+            aria-label="Filter collaboration type"
+          >
+
+            <option value="">
+              All types
+            </option>
+
+            @for (
+              type of collaborationTypes;
+              track type
+            ) {
+
+              <option
+                [value]="type"
+              >
+                {{ type }}
+              </option>
+
+            }
+
+          </select>
+
+
+          @if (
+            searchQuery ||
+            selectedType
+          ) {
+
+            <button
+              type="button"
+              class="clear-button"
+              (click)="clearFilters()"
+            >
+              Clear
+            </button>
+
+          }
+
+        </div>
+
+
+        <div class="opportunity-grid">
+
+          @for (
+            opportunity of filteredOpportunities;
+            track opportunity.id
+          ) {
+
+            <article class="opportunity-card">
+
+              <div class="opportunity-header">
+
+                <div class="opportunity-person">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      opportunity.ownerId
+                    ]"
+                    class="person-avatar person-avatar--small"
+                  >
+                    {{
+                      getInitials(
+                        opportunity.owner
+                      )
+                    }}
+                  </a>
+
+
+                  <div>
+
+                    <a
+                      [routerLink]="[
+                        '/people',
+                        opportunity.ownerId
+                      ]"
+                    >
+                      {{ opportunity.owner }}
+                    </a>
+
+                    <span>
+                      {{ opportunity.ownerRole }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <span class="match-badge">
+                  {{ opportunity.match }}% match
+                </span>
+
+              </div>
+
+
+              <div class="opportunity-body">
+
+                <span
+                  [class]="
+                    getTypeClass(
+                      opportunity.type
+                    )
+                  "
+                >
+                  {{ opportunity.type }}
+                </span>
+
+
+                <h3>
+                  {{ opportunity.title }}
+                </h3>
+
+
+                <p>
+                  {{ opportunity.description }}
+                </p>
+
+
+                <!-- DETAILS -->
+                <div class="opportunity-details">
+
+                  <div>
+                    <span>
+                      Looking for
+                    </span>
+
+                    <strong>
+                      {{
+                        opportunity.lookingFor
+                      }}
+                    </strong>
+                  </div>
+
+
+                  <div>
+                    <span>
+                      Commitment
+                    </span>
+
+                    <strong>
+                      {{
+                        opportunity.commitment
+                      }}
+                    </strong>
+                  </div>
+
+
+                  <div>
+                    <span>
+                      Experience
+                    </span>
+
+                    <strong>
+                      {{
+                        opportunity.experienceLevel
+                      }}
+                    </strong>
+                  </div>
+
+                </div>
+
+
+                <div class="skill-list">
+
+                  @for (
+                    skill of opportunity.skills;
+                    track skill
+                  ) {
+
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+
+                  }
+
+                </div>
+
+
+                <div class="interest-info">
+
+                  <span>
+                    ◉
+                  </span>
+
+                  <p>
+                    <strong>
+                      {{
+                        opportunity.interestedPeople
+                      }}
+                    </strong>
+
+                    people are interested
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div class="opportunity-footer">
+
+                <button
+                  type="button"
+                  class="save-button"
+                  [class.save-button--saved]="
+                    opportunity.saved
+                  "
+                  (click)="
+                    toggleSaveOpportunity(
+                      opportunity
+                    )
+                  "
+                >
+                  {{
+                    opportunity.saved
+                      ? 'Saved'
+                      : 'Save'
+                  }}
+                </button>
+
+
+                <button
+                  type="button"
+                  class="primary-button"
+                  [disabled]="
+                    opportunity.applied
+                  "
+                  (click)="
+                    applyToOpportunity(
+                      opportunity
+                    )
+                  "
+                >
+                  {{
+                    opportunity.applied
+                      ? 'Interest sent'
+                      : 'I’m interested'
+                  }}
+                </button>
+
+              </div>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <span>◇</span>
+
+              <h3>
+                No opportunities found
+              </h3>
+
+              <p>
+                Try changing your search
+                or collaboration type.
+              </p>
+
+              <button
+                type="button"
+                (click)="clearFilters()"
+              >
+                Clear filters
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- ======================================
+         REQUESTS
+    ======================================= -->
+    @if (
+      activeTab === 'requests'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>
+              Connection Requests
+            </h2>
+
+            <p>
+              People who want to work,
+              learn or exchange skills with you.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="request-list">
+
+          @for (
+            request of requests;
+            track request.id
+          ) {
+
+            <article class="request-card">
+
+              <!-- PERSON -->
+              <div class="request-person">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    request.personId
+                  ]"
+                  class="request-avatar"
+                >
+                  {{
+                    getInitials(
+                      request.name
+                    )
+                  }}
+                </a>
+
+
+                <div class="request-person-info">
+
+                  <div>
+
+                    <a
+                      [routerLink]="[
+                        '/people',
+                        request.personId
+                      ]"
+                      class="request-name"
+                    >
+                      {{ request.name }}
+                    </a>
+
+
+                    <span class="match-badge">
+                      {{ request.match }}%
+                    </span>
+
+                  </div>
+
+
+                  <p>
+                    {{ request.role }}
+                  </p>
+
+                </div>
+
+
+                <span
+                  [class]="
+                    getRequestStatusClass(
+                      request.status
+                    )
+                  "
+                >
+                  {{ request.status }}
+                </span>
+
+              </div>
+
+
+              <div class="request-body">
+
+                <div class="request-purpose">
+
+                  <span>
+                    WANTS TO CONNECT FOR
+                  </span>
+
+                  <strong>
+                    {{ request.purpose }}
+                  </strong>
+
+                </div>
+
+
+                <div class="request-message">
+
+                  <span>
+                    “
+                  </span>
+
+                  <p>
+                    {{ request.message }}
+                  </p>
+
+                </div>
+
+
+                <!-- MUTUAL VALUE -->
+                <div class="request-exchange">
+
+                  <div>
+
+                    <span>
+                      THEY CAN OFFER
+                    </span>
+
+
+                    <div class="skill-list">
+
+                      @for (
+                        skill of request.offers;
+                        track skill
+                      ) {
+
+                        <span
+                          class="skill-tag skill-tag--offer"
+                        >
+                          {{ skill }}
+                        </span>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="request-exchange-icon">
+                    ↔
+                  </div>
+
+
+                  <div>
+
+                    <span>
+                      THEY WANT TO LEARN
+                    </span>
+
+
+                    <div class="skill-list">
+
+                      @for (
+                        skill of request.wants;
+                        track skill
+                      ) {
+
+                        <span
+                          class="skill-tag skill-tag--learn"
+                        >
+                          {{ skill }}
+                        </span>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="request-footer">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    request.personId
+                  ]"
+                  class="secondary-button"
+                >
+                  View profile
+                </a>
+
+
+                @if (
+                  request.status ===
+                  'Pending'
+                ) {
+
+                  <button
+                    type="button"
+                    class="decline-button"
+                    (click)="
+                      declineRequest(
+                        request
+                      )
+                    "
+                  >
+                    Decline
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="primary-button"
+                    (click)="
+                      acceptRequest(
+                        request
+                      )
+                    "
+                  >
+                    Accept
+                  </button>
+
+                }
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </div>
+
+</div>
