@@ -1,0 +1,1298 @@
+<div class="workspace-page">
+
+  <div class="workspace-container">
+
+    <!-- =====================================
+         BACK
+    ====================================== -->
+    <a
+      routerLink="/collaborate"
+      class="back-link"
+    >
+      <span>←</span>
+
+      My Collaborations
+    </a>
+
+
+    <!-- =====================================
+         WORKSPACE HEADER
+    ====================================== -->
+    <section class="workspace-header">
+
+      <div class="workspace-heading">
+
+        <div class="workspace-heading__main">
+
+          <div class="workspace-type-row">
+
+            <span class="workspace-type">
+              {{ workspace.type }}
+            </span>
+
+
+            <span
+              class="workspace-status"
+              [class.workspace-status--completed]="
+                workspace.status === 'Completed'
+              "
+            >
+              {{ workspace.status }}
+            </span>
+
+          </div>
+
+
+          <h1>
+            {{ workspace.title }}
+          </h1>
+
+
+          <p>
+            {{ workspace.description }}
+          </p>
+
+        </div>
+
+
+        <!-- MEMBERS -->
+        <div class="workspace-members">
+
+          @for (
+            member of workspace.members;
+            track member.id
+          ) {
+
+            @if (member.id === 0) {
+
+              <div class="member-avatar">
+
+                <span class="member-avatar__circle">
+                  {{ getInitials(member.name) }}
+                </span>
+
+                <div>
+                  <strong>
+                    {{ member.name }}
+                  </strong>
+
+                  <span>
+                    {{ member.projectRole }}
+                  </span>
+                </div>
+
+              </div>
+
+            } @else {
+
+              <a
+                [routerLink]="[
+                  '/people',
+                  member.id
+                ]"
+                class="member-avatar"
+              >
+
+                <span class="member-avatar__circle">
+                  {{ getInitials(member.name) }}
+                </span>
+
+                <div>
+                  <strong>
+                    {{ member.name }}
+                  </strong>
+
+                  <span>
+                    {{ member.projectRole }}
+                  </span>
+                </div>
+
+              </a>
+
+            }
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================
+           PROGRESS
+      ====================================== -->
+      <div class="workspace-progress">
+
+        <div class="progress-info">
+
+          <div>
+            <span>
+              Overall progress
+            </span>
+
+            <strong>
+              {{ progress }}%
+            </strong>
+          </div>
+
+
+          <p>
+            {{ completedTasks }}
+            of
+            {{ workspace.tasks.length }}
+            tasks completed
+          </p>
+
+        </div>
+
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          [attr.aria-valuenow]="progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <span
+            [style.width.%]="progress"
+          ></span>
+        </div>
+
+      </div>
+
+
+      <!-- =====================================
+           TABS
+      ====================================== -->
+      <nav
+        class="workspace-tabs"
+        aria-label="Workspace navigation"
+      >
+
+        <button
+          type="button"
+          class="workspace-tab"
+          [class.workspace-tab--active]="
+            activeTab === 'overview'
+          "
+          (click)="setTab('overview')"
+        >
+          Overview
+        </button>
+
+
+        <button
+          type="button"
+          class="workspace-tab"
+          [class.workspace-tab--active]="
+            activeTab === 'tasks'
+          "
+          (click)="setTab('tasks')"
+        >
+          Tasks
+
+          <span class="tab-count">
+            {{ workspace.tasks.length }}
+          </span>
+        </button>
+
+
+        <button
+          type="button"
+          class="workspace-tab"
+          [class.workspace-tab--active]="
+            activeTab === 'evidence'
+          "
+          (click)="setTab('evidence')"
+        >
+          Evidence
+
+          <span class="tab-count">
+            {{ workspace.evidence.length }}
+          </span>
+        </button>
+
+
+        <button
+          type="button"
+          class="workspace-tab"
+          [class.workspace-tab--active]="
+            activeTab === 'activity'
+          "
+          (click)="setTab('activity')"
+        >
+          Activity
+        </button>
+
+      </nav>
+
+    </section>
+
+
+    <!-- COMPLETION MESSAGE -->
+    @if (completionMessage) {
+
+      <div class="completion-message">
+
+        <span>✓</span>
+
+        <p>
+          {{ completionMessage }}
+        </p>
+
+
+        <button
+          type="button"
+          (click)="completionMessage = ''"
+        >
+          ×
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================
+         OVERVIEW
+    ====================================== -->
+    @if (
+      activeTab === 'overview'
+    ) {
+
+      <div class="workspace-layout">
+
+        <div class="workspace-main">
+
+          <!-- GOAL -->
+          <section class="workspace-card">
+
+            <div class="card-heading">
+
+              <div>
+                <span class="section-label">
+                  COLLABORATION GOAL
+                </span>
+
+                <h2>
+                  What you're building together
+                </h2>
+              </div>
+
+            </div>
+
+
+            <p class="goal-text">
+              {{ workspace.goal }}
+            </p>
+
+
+            <div class="goal-meta">
+
+              <div>
+                <span>
+                  Commitment
+                </span>
+
+                <strong>
+                  {{ workspace.commitment }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>
+                  Started
+                </span>
+
+                <strong>
+                  {{ workspace.startedDate }}
+                </strong>
+              </div>
+
+
+              <div>
+                <span>
+                  Members
+                </span>
+
+                <strong>
+                  {{ workspace.members.length }}
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div class="skill-list">
+
+              @for (
+                skill of workspace.skills;
+                track skill
+              ) {
+
+                <span class="skill-tag">
+                  {{ skill }}
+                </span>
+
+              }
+
+            </div>
+
+          </section>
+
+
+          <!-- CURRENT MILESTONE -->
+          <section class="workspace-card milestone-card">
+
+            <div class="milestone-icon">
+              ✦
+            </div>
+
+
+            <div>
+
+              <span class="section-label">
+                CURRENT MILESTONE
+              </span>
+
+              <h2>
+                {{ workspace.currentMilestone }}
+              </h2>
+
+
+              @if (
+                workspace.status === 'In Progress'
+              ) {
+
+                <button
+                  type="button"
+                  class="text-button"
+                  (click)="setTab('tasks')"
+                >
+                  View related tasks
+                  <span>→</span>
+                </button>
+
+              }
+
+            </div>
+
+          </section>
+
+
+          <!-- MEMBERS -->
+          <section class="workspace-card">
+
+            <div class="card-heading">
+
+              <div>
+                <h2>
+                  Collaboration roles
+                </h2>
+
+                <p>
+                  Everyone should know what
+                  they are responsible for.
+                </p>
+              </div>
+
+            </div>
+
+
+            <div class="member-list">
+
+              @for (
+                member of workspace.members;
+                track member.id
+              ) {
+
+                <article class="member-card">
+
+                  <div class="member-large-avatar">
+                    {{ getInitials(member.name) }}
+                  </div>
+
+
+                  <div class="member-card__info">
+
+                    <strong>
+                      {{ member.name }}
+                    </strong>
+
+                    <span>
+                      {{ member.role }}
+                    </span>
+
+                    <div>
+                      {{ member.projectRole }}
+                    </div>
+
+                  </div>
+
+                </article>
+
+              }
+
+            </div>
+
+          </section>
+
+
+          <!-- RECENT TASKS -->
+          <section class="workspace-card">
+
+            <div class="card-heading">
+
+              <div>
+                <h2>
+                  Current tasks
+                </h2>
+
+                <p>
+                  What the collaboration is
+                  currently working on.
+                </p>
+              </div>
+
+
+              <button
+                type="button"
+                class="text-button"
+                (click)="setTab('tasks')"
+              >
+                View all
+              </button>
+
+            </div>
+
+
+            <div class="compact-task-list">
+
+              @for (
+                task of workspace.tasks;
+                track task.id
+              ) {
+
+                @if (
+                  task.status !== 'Completed'
+                ) {
+
+                  <article class="compact-task">
+
+                    <button
+                      type="button"
+                      class="task-check"
+                      [class.task-check--progress]="
+                        task.status ===
+                        'In Progress'
+                      "
+                      (click)="
+                        cycleTaskStatus(task)
+                      "
+                    >
+                      @if (
+                        task.status ===
+                        'In Progress'
+                      ) {
+                        •
+                      }
+                    </button>
+
+
+                    <div>
+
+                      <strong>
+                        {{ task.title }}
+                      </strong>
+
+                      <span>
+                        {{ task.assignee }}
+                      </span>
+
+                    </div>
+
+
+                    <span
+                      [class]="
+                        getTaskStatusClass(
+                          task.status
+                        )
+                      "
+                    >
+                      {{ task.status }}
+                    </span>
+
+                  </article>
+
+                }
+
+              }
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- =====================================
+             RIGHT SIDEBAR
+        ====================================== -->
+        <aside class="workspace-sidebar">
+
+          <!-- NEXT STEP -->
+          <section class="sidebar-card">
+
+            <span class="sidebar-icon">
+              ✦
+            </span>
+
+            <span class="section-label">
+              NEXT STEP
+            </span>
+
+            <h2>
+              {{
+                workspace.status ===
+                'Completed'
+                  ? 'Verify each other'
+                  : workspace.currentMilestone
+              }}
+            </h2>
+
+
+            @if (
+              workspace.status ===
+              'Completed'
+            ) {
+
+              <p>
+                Review each other's contribution
+                and verify skills demonstrated
+                during this collaboration.
+              </p>
+
+
+              <button
+                type="button"
+                class="primary-button full-button"
+              >
+                Start peer verification
+              </button>
+
+            } @else {
+
+              <p>
+                Complete the remaining tasks
+                and add evidence of what each
+                person contributed.
+              </p>
+
+
+              <button
+                type="button"
+                class="primary-button full-button"
+                (click)="setTab('tasks')"
+              >
+                Continue work
+              </button>
+
+            }
+
+          </section>
+
+
+          <!-- EVIDENCE -->
+          <section class="sidebar-card">
+
+            <div class="sidebar-heading">
+
+              <h2>
+                Evidence collected
+              </h2>
+
+              <p>
+                Proof created through this
+                collaboration.
+              </p>
+
+            </div>
+
+
+            <div class="evidence-summary">
+
+              <strong>
+                {{ workspace.evidence.length }}
+              </strong>
+
+              <span>
+                evidence items
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="secondary-button full-button"
+              (click)="setTab('evidence')"
+            >
+              View evidence
+            </button>
+
+          </section>
+
+
+          <!-- COMPLETE -->
+          @if (
+            workspace.status ===
+            'In Progress'
+          ) {
+
+            <section class="sidebar-card complete-card">
+
+              <div class="sidebar-heading">
+
+                <h2>
+                  Finish collaboration
+                </h2>
+
+                <p>
+                  All tasks must be completed
+                  first.
+                </p>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="complete-button"
+                [disabled]="
+                  !canCompleteCollaboration
+                "
+                (click)="
+                  completeCollaboration()
+                "
+              >
+                Complete collaboration
+              </button>
+
+
+              @if (
+                !canCompleteCollaboration
+              ) {
+
+                <small>
+                  {{
+                    workspace.tasks.length -
+                    completedTasks
+                  }}
+                  tasks remaining
+                </small>
+
+              }
+
+            </section>
+
+          }
+
+        </aside>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================
+         TASKS
+    ====================================== -->
+    @if (
+      activeTab === 'tasks'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="content-heading">
+
+          <div>
+            <h2>
+              Tasks
+            </h2>
+
+            <p>
+              Track the work needed to
+              complete this collaboration.
+            </p>
+          </div>
+
+
+          <div class="task-summary">
+            <strong>
+              {{ completedTasks }}
+            </strong>
+
+            <span>
+              /
+              {{ workspace.tasks.length }}
+              completed
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="task-list">
+
+          @for (
+            task of workspace.tasks;
+            track task.id
+          ) {
+
+            <article
+              class="task-card"
+              [class.task-card--completed]="
+                task.status === 'Completed'
+              "
+            >
+
+              <button
+                type="button"
+                class="task-toggle"
+                [class.task-toggle--completed]="
+                  task.status === 'Completed'
+                "
+                [class.task-toggle--progress]="
+                  task.status ===
+                  'In Progress'
+                "
+                [disabled]="
+                  workspace.status ===
+                  'Completed'
+                "
+                (click)="
+                  cycleTaskStatus(task)
+                "
+              >
+
+                @if (
+                  task.status ===
+                  'Completed'
+                ) {
+                  ✓
+                } @else if (
+                  task.status ===
+                  'In Progress'
+                ) {
+                  •
+                }
+
+              </button>
+
+
+              <div class="task-card__content">
+
+                <div class="task-card__heading">
+
+                  <div>
+
+                    <h3>
+                      {{ task.title }}
+                    </h3>
+
+                    <p>
+                      {{ task.description }}
+                    </p>
+
+                  </div>
+
+
+                  <span
+                    [class]="
+                      getTaskStatusClass(
+                        task.status
+                      )
+                    "
+                  >
+                    {{ task.status }}
+                  </span>
+
+                </div>
+
+
+                <div class="task-meta">
+
+                  <span>
+                    Assigned to
+                    <strong>
+                      {{ task.assignee }}
+                    </strong>
+                  </span>
+
+
+                  <span class="task-skill">
+                    {{ task.skill }}
+                  </span>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+
+        @if (
+          workspace.status ===
+          'In Progress'
+        ) {
+
+          <div class="task-help">
+
+            <span>◎</span>
+
+            <p>
+              Click the circle beside a task to
+              move it between
+              <strong>To Do</strong>,
+              <strong>In Progress</strong>
+              and
+              <strong>Completed</strong>.
+            </p>
+
+          </div>
+
+        }
+
+      </section>
+
+    }
+
+
+    <!-- =====================================
+         EVIDENCE
+    ====================================== -->
+    @if (
+      activeTab === 'evidence'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="content-heading">
+
+          <div>
+
+            <h2>
+              Collaboration Evidence
+            </h2>
+
+            <p>
+              Capture proof of the work,
+              learning and contribution made
+              during this collaboration.
+            </p>
+
+          </div>
+
+
+          @if (
+            workspace.status ===
+            'In Progress'
+          ) {
+
+            <button
+              type="button"
+              class="primary-button"
+              (click)="openEvidenceModal()"
+            >
+              <span>+</span>
+              Add evidence
+            </button>
+
+          }
+
+        </div>
+
+
+        <div class="evidence-grid">
+
+          @for (
+            evidence of workspace.evidence;
+            track evidence.id
+          ) {
+
+            <article class="evidence-card">
+
+              <div class="evidence-card__header">
+
+                <span class="evidence-icon">
+                  {{
+                    getEvidenceIcon(
+                      evidence.type
+                    )
+                  }}
+                </span>
+
+
+                <span class="evidence-type">
+                  {{ evidence.type }}
+                </span>
+
+              </div>
+
+
+              <h3>
+                {{ evidence.title }}
+              </h3>
+
+
+              <p>
+                {{ evidence.description }}
+              </p>
+
+
+              <div class="skill-list">
+
+                @for (
+                  skill of evidence.skills;
+                  track skill
+                ) {
+
+                  <span class="skill-tag">
+                    {{ skill }}
+                  </span>
+
+                }
+
+              </div>
+
+
+              <div class="evidence-card__footer">
+
+                <div>
+
+                  <span>
+                    Added by
+                  </span>
+
+                  <strong>
+                    {{ evidence.addedBy }}
+                  </strong>
+
+                </div>
+
+
+                <span>
+                  {{ evidence.date }}
+                </span>
+
+              </div>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <span>◇</span>
+
+              <h3>
+                No evidence yet
+              </h3>
+
+              <p>
+                Add evidence as you complete
+                meaningful work.
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- =====================================
+         ACTIVITY
+    ====================================== -->
+    @if (
+      activeTab === 'activity'
+    ) {
+
+      <section class="tab-content activity-section">
+
+        <div class="content-heading">
+
+          <div>
+            <h2>
+              Activity
+            </h2>
+
+            <p>
+              Recent changes and contributions
+              inside this workspace.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="activity-list">
+
+          @for (
+            activity of workspace.activity;
+            track activity.id
+          ) {
+
+            <article class="activity-item">
+
+              <span class="activity-avatar">
+                {{
+                  getInitials(
+                    activity.user
+                  )
+                }}
+              </span>
+
+
+              <div>
+
+                <p>
+                  <strong>
+                    {{ activity.user }}
+                  </strong>
+
+                  {{ activity.action }}
+
+                  @if (
+                    activity.target
+                  ) {
+                    <strong>
+                      {{ activity.target }}
+                    </strong>
+                  }
+                </p>
+
+
+                <span>
+                  {{ activity.time }}
+                </span>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </div>
+
+
+  <!-- =====================================
+       ADD EVIDENCE MODAL
+  ====================================== -->
+  @if (
+    isEvidenceModalOpen
+  ) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeEvidenceModal()"
+    >
+
+      <section
+        class="evidence-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="evidence-modal-title"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="modal-header">
+
+          <div>
+
+            <span class="section-label">
+              ADD EVIDENCE
+            </span>
+
+            <h2 id="evidence-modal-title">
+              Show what you contributed
+            </h2>
+
+            <p>
+              Add proof that can later support
+              your CareerFlow profile.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-button"
+            (click)="closeEvidenceModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <div class="form-field">
+
+            <label for="evidence-title">
+              Evidence title
+            </label>
+
+            <input
+              id="evidence-title"
+              type="text"
+              placeholder="e.g. Angular Dashboard"
+              [(ngModel)]="
+                evidenceForm.title
+              "
+            />
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="evidence-type">
+              Evidence type
+            </label>
+
+            <select
+              id="evidence-type"
+              [(ngModel)]="
+                evidenceForm.type
+              "
+            >
+
+              @for (
+                type of evidenceTypes;
+                track type
+              ) {
+
+                <option
+                  [value]="type"
+                >
+                  {{ type }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="evidence-description">
+              Description
+            </label>
+
+            <textarea
+              id="evidence-description"
+              rows="4"
+              placeholder="Explain what you created or contributed..."
+              [(ngModel)]="
+                evidenceForm.description
+              "
+            ></textarea>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="evidence-skills">
+              Skills demonstrated
+            </label>
+
+            <input
+              id="evidence-skills"
+              type="text"
+              placeholder="Angular, TypeScript, REST API"
+              [(ngModel)]="
+                evidenceForm.skills
+              "
+            />
+
+            <small>
+              Separate skills with commas.
+            </small>
+
+          </div>
+
+
+          <div class="form-field">
+
+            <label for="evidence-link">
+              Link
+              <span>Optional</span>
+            </label>
+
+            <input
+              id="evidence-link"
+              type="text"
+              placeholder="GitHub, deployment or document URL"
+              [(ngModel)]="
+                evidenceForm.link
+              "
+            />
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="closeEvidenceModal()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="
+              !evidenceForm.title.trim() ||
+              !evidenceForm.description.trim()
+            "
+            (click)="addEvidence()"
+          >
+            Add evidence
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  }
+
+</div>

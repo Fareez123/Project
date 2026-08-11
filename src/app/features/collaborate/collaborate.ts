@@ -23,7 +23,6 @@ type RequestStatus =
 
 interface Collaboration {
   id: number;
-
   title: string;
   type: CollaborationType;
 
@@ -34,7 +33,6 @@ interface Collaboration {
   description: string;
 
   status: CollaborationStatus;
-
   progress: number;
 
   yourRole: string;
@@ -87,12 +85,7 @@ interface CollaborationRequest {
 
   match: number;
 
-  purpose:
-    | 'Collaboration'
-    | 'Skill Exchange'
-    | 'I can help'
-    | 'Advice'
-    | 'Mentorship';
+  purpose: string;
 
   message: string;
 
@@ -112,13 +105,14 @@ interface CollaborationRequest {
   styleUrl: './collaborate.css'
 })
 export class Collaborate {
+
   activeTab: CollaborateTab = 'my';
 
   searchQuery = '';
 
   selectedType = '';
 
-  workspaceMessage = '';
+  actionMessage = '';
 
   collaborationTypes: CollaborationType[] = [
     'Project Collaboration',
@@ -136,8 +130,7 @@ export class Collaborate {
       type:
         'Project Collaboration',
 
-      collaboratorId:
-        1,
+      collaboratorId: 1,
 
       collaborator:
         'Amir Hakim',
@@ -146,13 +139,12 @@ export class Collaborate {
         'Junior DevOps Engineer',
 
       description:
-        'Building a full-stack expense management application while combining frontend, backend and deployment experience.',
+        'Building and deploying a full-stack expense management application using Angular, Spring Boot and Docker.',
 
       status:
         'In Progress',
 
-      progress:
-        70,
+      progress: 70,
 
       yourRole:
         'Frontend & API Integration',
@@ -180,8 +172,7 @@ export class Collaborate {
       type:
         'Skill Exchange',
 
-      collaboratorId:
-        1,
+      collaboratorId: 1,
 
       collaborator:
         'Amir Hakim',
@@ -190,13 +181,12 @@ export class Collaborate {
         'Junior DevOps Engineer',
 
       description:
-        'A structured skill exchange where both participants teach a practical skill and complete exercises together.',
+        'A practical skill exchange where you share Angular knowledge while learning Docker and deployment fundamentals.',
 
       status:
         'In Progress',
 
-      progress:
-        50,
+      progress: 50,
 
       yourRole:
         'Angular Guide',
@@ -209,15 +199,12 @@ export class Collaborate {
 
       skills: [
         'Angular',
-        'Docker',
-        'TypeScript'
+        'TypeScript',
+        'Docker'
       ],
 
-      sessionsCompleted:
-        2,
-
-      totalSessions:
-        4,
+      sessionsCompleted: 2,
+      totalSessions: 4,
 
       youTeach:
         'Angular',
@@ -235,23 +222,21 @@ export class Collaborate {
       type:
         'Micro Collaboration',
 
-      collaboratorId:
-        4,
+      collaboratorId: 4,
 
       collaborator:
         'Nur Aina',
 
       collaboratorRole:
-        'Junior Software Developer',
+        'Fresh Graduate Software Developer',
 
       description:
-        'Reviewed a Spring Boot JWT authentication implementation and provided feedback on controller and service structure.',
+        'Reviewed a Spring Boot JWT authentication implementation and provided practical code feedback.',
 
       status:
         'Completed',
 
-      progress:
-        100,
+      progress: 100,
 
       yourRole:
         'Code Reviewer',
@@ -260,7 +245,7 @@ export class Collaborate {
         'Backend Developer',
 
       nextMilestone:
-        'Completed — peer verification available',
+        'Collaboration completed',
 
       skills: [
         'Java',
@@ -271,165 +256,145 @@ export class Collaborate {
     }
   ];
 
-  opportunities:
-    CollaborationOpportunity[] = [
-      {
-        id: 201,
+  opportunities: CollaborationOpportunity[] = [
+    {
+      id: 201,
 
-        ownerId:
-          2,
+      ownerId: 2,
 
-        owner:
-          'Sarah Lim',
+      owner:
+        'Sarah Lim',
 
-        ownerRole:
-          'Backend Developer',
+      ownerRole:
+        'Backend Developer',
 
-        title:
-          'Build a developer portfolio analytics platform',
+      title:
+        'Portfolio Analytics Dashboard',
 
-        description:
-          'I am building a backend service that analyses developer project data and I need someone to help create the Angular frontend.',
+      description:
+        'Looking for someone interested in building the Angular frontend for a portfolio analytics application.',
 
-        match:
-          94,
+      match: 94,
 
-        type:
-          'Project Collaboration',
+      type:
+        'Project Collaboration',
 
-        lookingFor:
-          'Angular Developer',
+      lookingFor:
+        'Angular Developer',
 
-        commitment:
-          '3–4 hrs / week',
+      commitment:
+        '3–4 hrs / week',
 
-        experienceLevel:
-          'Junior friendly',
+      experienceLevel:
+        'Junior friendly',
 
-        skills: [
-          'Angular',
-          'TypeScript',
-          'Spring Boot',
-          'REST API'
-        ],
+      skills: [
+        'Angular',
+        'Spring Boot',
+        'PostgreSQL'
+      ],
 
-        interestedPeople:
-          4,
+      interestedPeople: 4,
 
-        saved:
-          false,
+      saved: false,
 
-        applied:
-          false
-      },
+      applied: false
+    },
 
-      {
-        id: 202,
+    {
+      id: 202,
 
-        ownerId:
-          5,
+      ownerId: 1,
 
-        owner:
-          'Hakim Zain',
+      owner:
+        'Amir Hakim',
 
-        ownerRole:
-          'Fresh Graduate Developer',
+      ownerRole:
+        'Junior DevOps Engineer',
 
-        title:
-          'Deploy a full-stack application with Docker',
+      title:
+        'Deploy a Full-Stack Application with Docker',
 
-        description:
-          'Looking for another junior developer to build a Java and Angular application and deploy it using Docker.',
+      description:
+        'Learn deployment together by containerising an Angular and Spring Boot application with Docker.',
 
-        match:
-          92,
+      match: 92,
 
-        type:
-          'Skill Exchange',
+      type:
+        'Skill Exchange',
 
-        lookingFor:
-          'Java / Angular Developer',
+      lookingFor:
+        'Angular / Java Developer',
 
-        commitment:
-          '2–3 hrs / week',
+      commitment:
+        '2 hrs / week',
 
-        experienceLevel:
-          'Beginner friendly',
+      experienceLevel:
+        'Beginner friendly',
 
-        skills: [
-          'Docker',
-          'Java',
-          'Angular',
-          'Deployment'
-        ],
+      skills: [
+        'Docker',
+        'Angular',
+        'Spring Boot'
+      ],
 
-        interestedPeople:
-          6,
+      interestedPeople: 6,
 
-        saved:
-          false,
+      saved: false,
 
-        applied:
-          false
-      },
+      applied: false
+    },
 
-      {
-        id: 203,
+    {
+      id: 203,
 
-        ownerId:
-          3,
+      ownerId: 3,
 
-        owner:
-          'Daniel Tan',
+      owner:
+        'Daniel Tan',
 
-        ownerRole:
-          'Software Engineer',
+      ownerRole:
+        'Software Engineer',
 
-        title:
-          'Create a CI/CD workflow for a Spring Boot project',
+      title:
+        'Spring Boot CI/CD Setup Review',
 
-        description:
-          'A short collaboration focused on creating a GitHub Actions pipeline for testing and building a Spring Boot application.',
+      description:
+        'A short collaboration to review and improve a GitHub Actions pipeline for a Spring Boot application.',
 
-        match:
-          87,
+      match: 87,
 
-        type:
-          'Micro Collaboration',
+      type:
+        'Micro Collaboration',
 
-        lookingFor:
-          'Spring Boot Developer',
+      lookingFor:
+        'Java Developer',
 
-        commitment:
-          '1–2 hrs / week',
+      commitment:
+        '30–60 minutes',
 
-        experienceLevel:
-          'Junior friendly',
+      experienceLevel:
+        'Junior friendly',
 
-        skills: [
-          'Spring Boot',
-          'GitHub Actions',
-          'CI/CD',
-          'Testing'
-        ],
+      skills: [
+        'Spring Boot',
+        'GitHub Actions',
+        'CI/CD'
+      ],
 
-        interestedPeople:
-          3,
+      interestedPeople: 3,
 
-        saved:
-          false,
+      saved: false,
 
-        applied:
-          false
-      }
-    ];
+      applied: false
+    }
+  ];
 
   requests: CollaborationRequest[] = [
     {
       id: 301,
 
-      personId:
-        2,
+      personId: 2,
 
       name:
         'Sarah Lim',
@@ -437,14 +402,13 @@ export class Collaborate {
       role:
         'Backend Developer',
 
-      match:
-        91,
+      match: 91,
 
       purpose:
         'Skill Exchange',
 
       message:
-        'I can help you gain practical AWS and backend deployment experience. I would also like to improve my Angular skills by building something small together.',
+        'I can help you with Spring Boot and AWS. I am currently improving my Angular skills and think we could help each other.',
 
       offers: [
         'AWS',
@@ -464,8 +428,7 @@ export class Collaborate {
     {
       id: 302,
 
-      personId:
-        3,
+      personId: 3,
 
       name:
         'Daniel Tan',
@@ -473,14 +436,13 @@ export class Collaborate {
       role:
         'Software Engineer',
 
-      match:
-        87,
+      match: 87,
 
       purpose:
         'Collaboration',
 
       message:
-        'I am working on a CI/CD practice project and think your Spring Boot experience would be useful. We could build the workflow together.',
+        'Would you be interested in working on a small CI/CD project together? I can help with the pipeline while you handle the Spring Boot side.',
 
       offers: [
         'GitHub Actions',
@@ -500,29 +462,30 @@ export class Collaborate {
   get filteredOpportunities():
     CollaborationOpportunity[] {
 
-    const search =
+    const query =
       this.searchQuery
         .trim()
         .toLowerCase();
 
-    return this.opportunities
-      .filter((opportunity) => {
+    return this.opportunities.filter(
+      (opportunity) => {
+
         const matchesSearch =
-          !search ||
+          !query ||
           opportunity.title
             .toLowerCase()
-            .includes(search) ||
-          opportunity.description
-            .toLowerCase()
-            .includes(search) ||
+            .includes(query) ||
           opportunity.owner
             .toLowerCase()
-            .includes(search) ||
+            .includes(query) ||
+          opportunity.description
+            .toLowerCase()
+            .includes(query) ||
           opportunity.skills.some(
             (skill) =>
               skill
                 .toLowerCase()
-                .includes(search)
+                .includes(query)
           );
 
         const matchesType =
@@ -534,15 +497,12 @@ export class Collaborate {
           matchesSearch &&
           matchesType
         );
-      })
-      .sort(
-        (first, second) =>
-          second.match -
-          first.match
-      );
+      }
+    );
   }
 
   get pendingRequestsCount(): number {
+
     return this.requests.filter(
       (request) =>
         request.status === 'Pending'
@@ -552,22 +512,23 @@ export class Collaborate {
   setTab(
     tab: CollaborateTab
   ): void {
+
     this.activeTab = tab;
-    this.workspaceMessage = '';
+    this.actionMessage = '';
   }
 
   toggleSaveOpportunity(
-    opportunity:
-      CollaborationOpportunity
+    opportunity: CollaborationOpportunity
   ): void {
+
     opportunity.saved =
       !opportunity.saved;
   }
 
   applyToOpportunity(
-    opportunity:
-      CollaborationOpportunity
+    opportunity: CollaborationOpportunity
   ): void {
+
     if (opportunity.applied) {
       return;
     }
@@ -576,41 +537,32 @@ export class Collaborate {
 
     opportunity.interestedPeople++;
 
-    this.workspaceMessage =
-      `Interest sent to ${opportunity.owner}.`;
+    this.actionMessage =
+      `Your interest in "${opportunity.title}" has been sent.`;
   }
 
   acceptRequest(
-    request:
-      CollaborationRequest
+    request: CollaborationRequest
   ): void {
-    request.status =
-      'Accepted';
 
-    this.workspaceMessage =
-      `You accepted ${request.name}'s request.`;
+    request.status = 'Accepted';
+
+    this.actionMessage =
+      `You accepted ${request.name}'s collaboration request.`;
   }
 
   declineRequest(
-    request:
-      CollaborationRequest
+    request: CollaborationRequest
   ): void {
-    request.status =
-      'Declined';
 
-    this.workspaceMessage =
-      `You declined ${request.name}'s request.`;
-  }
+    request.status = 'Declined';
 
-  openWorkspace(
-    collaboration:
-      Collaboration
-  ): void {
-    this.workspaceMessage =
-      `${collaboration.title} workspace will be built next.`;
+    this.actionMessage =
+      `You declined ${request.name}'s collaboration request.`;
   }
 
   clearFilters(): void {
+
     this.searchQuery = '';
     this.selectedType = '';
   }
@@ -618,6 +570,7 @@ export class Collaborate {
   getInitials(
     name: string
   ): string {
+
     return name
       .trim()
       .split(/\s+/)
@@ -631,31 +584,44 @@ export class Collaborate {
   }
 
   getStatusClass(
-    status:
-      CollaborationStatus
+    status: CollaborationStatus
   ): string {
+
     return status === 'Completed'
       ? 'status-badge status-badge--completed'
       : 'status-badge status-badge--progress';
   }
 
   getRequestStatusClass(
-    status:
-      RequestStatus
+    status: RequestStatus
   ): string {
+
+    if (status === 'Accepted') {
+      return (
+        'request-status ' +
+        'request-status--accepted'
+      );
+    }
+
+    if (status === 'Declined') {
+      return (
+        'request-status ' +
+        'request-status--declined'
+      );
+    }
+
     return (
-      'request-status request-status--' +
-      status.toLowerCase()
+      'request-status ' +
+      'request-status--pending'
     );
   }
 
   getTypeClass(
-    type:
-      CollaborationType
+    type: CollaborationType
   ): string {
+
     if (
-      type ===
-      'Skill Exchange'
+      type === 'Skill Exchange'
     ) {
       return (
         'type-badge ' +
@@ -664,8 +630,7 @@ export class Collaborate {
     }
 
     if (
-      type ===
-      'Micro Collaboration'
+      type === 'Micro Collaboration'
     ) {
       return (
         'type-badge ' +

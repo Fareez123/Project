@@ -2,28 +2,38 @@
 
   <div class="collaborate-container">
 
-    <!-- ======================================
+    <!-- =========================================
          PAGE HEADER
-    ======================================= -->
-    <section class="page-heading">
+    ========================================== -->
+    <section class="page-header">
 
-      <div>
-        <h1>Collaborate</h1>
+      <div class="page-header__content">
+
+        <span class="eyebrow">
+          BUILD EXPERIENCE TOGETHER
+        </span>
+
+        <h1>
+          Collaborate
+        </h1>
 
         <p>
-          Build experience by working,
-          learning and creating evidence
-          together.
+          Work with people, exchange skills
+          and turn what you build together
+          into real professional evidence.
         </p>
+
       </div>
 
 
       <button
         type="button"
-        class="create-button"
+        class="primary-button page-header__button"
         (click)="setTab('opportunities')"
       >
-        <span>+</span>
+        <span aria-hidden="true">
+          +
+        </span>
 
         Find collaboration
       </button>
@@ -31,12 +41,12 @@
     </section>
 
 
-    <!-- ======================================
+    <!-- =========================================
          TABS
-    ======================================= -->
+    ========================================== -->
     <nav
       class="collaborate-tabs"
-      aria-label="Collaboration sections"
+      aria-label="Collaborate sections"
     >
 
       <button
@@ -76,30 +86,39 @@
         @if (
           pendingRequestsCount > 0
         ) {
+
           <span class="tab-count">
             {{ pendingRequestsCount }}
           </span>
+
         }
       </button>
 
     </nav>
 
 
-    <!-- STATUS MESSAGE -->
-    @if (workspaceMessage) {
+    <!-- =========================================
+         ACTION MESSAGE
+    ========================================== -->
+    @if (actionMessage) {
 
       <div class="action-message">
 
-        <span>✓</span>
+        <span
+          class="action-message__icon"
+          aria-hidden="true"
+        >
+          ✓
+        </span>
 
         <p>
-          {{ workspaceMessage }}
+          {{ actionMessage }}
         </p>
 
         <button
           type="button"
           aria-label="Close message"
-          (click)="workspaceMessage = ''"
+          (click)="actionMessage = ''"
         >
           ×
         </button>
@@ -109,9 +128,9 @@
     }
 
 
-    <!-- ======================================
+    <!-- =========================================
          MY COLLABORATIONS
-    ======================================= -->
+    ========================================== -->
     @if (
       activeTab === 'my'
     ) {
@@ -121,21 +140,20 @@
         <div class="section-heading">
 
           <div>
+
             <h2>
               My Collaborations
             </h2>
 
             <p>
-              Active work and skill exchanges
-              with your professional circle.
+              Continue the work you're building
+              with other people.
             </p>
+
           </div>
 
-
           <span class="section-count">
-            {{
-              collaborations.length
-            }}
+            {{ collaborations.length }}
             collaborations
           </span>
 
@@ -151,10 +169,10 @@
 
             <article class="collaboration-card">
 
-              <!-- TOP -->
-              <div class="collaboration-card__header">
+              <!-- CARD HEADER -->
+              <div class="collaboration-card__top">
 
-                <div class="collaboration-owner">
+                <div class="collaboration-person">
 
                   <a
                     [routerLink]="[
@@ -171,7 +189,7 @@
                   </a>
 
 
-                  <div>
+                  <div class="person-information">
 
                     <span class="working-with">
                       Collaborating with
@@ -189,55 +207,54 @@
                       }}
                     </a>
 
-                    <p>
+                    <span class="person-role">
                       {{
                         collaboration.collaboratorRole
                       }}
-                    </p>
+                    </span>
 
                   </div>
 
                 </div>
 
 
-                <span
-                  [class]="
-                    getStatusClass(
-                      collaboration.status
-                    )
-                  "
-                >
-                  {{
-                    collaboration.status
-                  }}
-                </span>
+                <div class="collaboration-card__badges">
+
+                  <span
+                    [class]="
+                      getTypeClass(
+                        collaboration.type
+                      )
+                    "
+                  >
+                    {{ collaboration.type }}
+                  </span>
+
+
+                  <span
+                    [class]="
+                      getStatusClass(
+                        collaboration.status
+                      )
+                    "
+                  >
+                    {{ collaboration.status }}
+                  </span>
+
+                </div>
 
               </div>
 
 
-              <!-- BODY -->
+              <!-- MAIN CONTENT -->
               <div class="collaboration-card__body">
-
-                <span
-                  [class]="
-                    getTypeClass(
-                      collaboration.type
-                    )
-                  "
-                >
-                  {{ collaboration.type }}
-                </span>
-
 
                 <h3>
                   {{ collaboration.title }}
                 </h3>
 
-
                 <p class="collaboration-description">
-                  {{
-                    collaboration.description
-                  }}
+                  {{ collaboration.description }}
                 </p>
 
 
@@ -258,19 +275,79 @@
                 </div>
 
 
+                <!-- SKILL EXCHANGE -->
+                @if (
+                  collaboration.type ===
+                  'Skill Exchange'
+                ) {
+
+                  <div class="exchange-panel">
+
+                    <div class="exchange-side">
+
+                      <span class="exchange-label">
+                        YOU SHARE
+                      </span>
+
+                      <strong>
+                        {{ collaboration.youTeach }}
+                      </strong>
+
+                    </div>
+
+
+                    <div class="exchange-arrow">
+                      ↔
+                    </div>
+
+
+                    <div class="exchange-side">
+
+                      <span class="exchange-label">
+                        YOU LEARN
+                      </span>
+
+                      <strong>
+                        {{ collaboration.youLearn }}
+                      </strong>
+
+                    </div>
+
+
+                    <div class="exchange-sessions">
+
+                      <strong>
+                        {{
+                          collaboration.sessionsCompleted
+                        }}
+                        /
+                        {{
+                          collaboration.totalSessions
+                        }}
+                      </strong>
+
+                      <span>
+                        sessions
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                }
+
+
                 <!-- PROGRESS -->
                 <div class="progress-section">
 
                   <div class="progress-heading">
 
                     <span>
-                      Progress
+                      Collaboration progress
                     </span>
 
                     <strong>
-                      {{
-                        collaboration.progress
-                      }}%
+                      {{ collaboration.progress }}%
                     </strong>
 
                   </div>
@@ -279,97 +356,29 @@
                   <div
                     class="progress-track"
                     role="progressbar"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
                     [attr.aria-valuenow]="
                       collaboration.progress
                     "
-                    aria-valuemin="0"
-                    aria-valuemax="100"
                   >
-
                     <span
                       [style.width.%]="
                         collaboration.progress
                       "
                     ></span>
-
                   </div>
 
                 </div>
 
 
-                <!-- SKILL EXCHANGE DETAILS -->
-                @if (
-                  collaboration.type ===
-                  'Skill Exchange'
-                ) {
-
-                  <div class="skill-exchange">
-
-                    <div>
-
-                      <span>
-                        YOU TEACH
-                      </span>
-
-                      <strong>
-                        {{
-                          collaboration.youTeach
-                        }}
-                      </strong>
-
-                    </div>
-
-
-                    <div class="exchange-symbol">
-                      ↔
-                    </div>
-
-
-                    <div>
-
-                      <span>
-                        YOU LEARN
-                      </span>
-
-                      <strong>
-                        {{
-                          collaboration.youLearn
-                        }}
-                      </strong>
-
-                    </div>
-
-                  </div>
-
-
-                  <div class="session-progress">
-
-                    <strong>
-                      {{
-                        collaboration.sessionsCompleted
-                      }}
-                      /
-                      {{
-                        collaboration.totalSessions
-                      }}
-                    </strong>
-
-                    <span>
-                      sessions completed
-                    </span>
-
-                  </div>
-
-                }
-
-
                 <!-- ROLES -->
-                <div class="role-grid">
+                <div class="role-section">
 
-                  <div>
+                  <div class="role-item">
 
-                    <span>
-                      Your role
+                    <span class="role-label">
+                      YOUR ROLE
                     </span>
 
                     <strong>
@@ -381,17 +390,19 @@
                   </div>
 
 
-                  <div>
+                  <div class="role-divider"></div>
 
-                    <span>
-                      {{
-                        collaboration.collaborator
-                      }}'s role
-                    </span>
+
+                  <div class="role-item">
+
+                    <span class="role-label">
+  {{ collaboration.collaborator }}'s role
+</span>
 
                     <strong>
                       {{
-                        collaboration.collaboratorRoleInProject
+                        collaboration
+                          .collaboratorRoleInProject
                       }}
                     </strong>
 
@@ -403,15 +414,20 @@
                 <!-- NEXT MILESTONE -->
                 <div class="milestone">
 
-                  <span class="milestone-icon">
+                  <div class="milestone__icon">
                     ✦
-                  </span>
+                  </div>
 
                   <div>
 
-                    <small>
-                      NEXT MILESTONE
-                    </small>
+                    <span>
+                      {{
+                        collaboration.status ===
+                        'Completed'
+                          ? 'COMPLETED'
+                          : 'NEXT MILESTONE'
+                      }}
+                    </span>
 
                     <strong>
                       {{
@@ -426,54 +442,63 @@
               </div>
 
 
-              <!-- FOOTER -->
-              <div class="collaboration-card__footer">
+              <!-- CARD FOOTER -->
+              <footer class="collaboration-card__footer">
 
-                @if (
-                  collaboration.status ===
-                  'Completed'
-                ) {
-
-                  <button
-                    type="button"
-                    class="secondary-button"
-                  >
-                    View evidence
-                  </button>
+                <a
+                  [routerLink]="[
+                    '/people',
+                    collaboration.collaboratorId
+                  ]"
+                  class="text-link"
+                >
+                  View collaborator
+                </a>
 
 
-                  <button
-                    type="button"
-                    class="primary-button"
-                  >
-                    Verify collaborator
-                  </button>
+                <div class="collaboration-actions">
 
-                } @else {
-
-                  <button
-                    type="button"
+                  <a
+                    [routerLink]="[
+                      '/collaborate',
+                      collaboration.id
+                    ]"
                     class="secondary-button"
                   >
                     View details
-                  </button>
+                  </a>
 
 
-                  <button
-                    type="button"
+                  <a
+                    [routerLink]="[
+                      '/collaborate',
+                      collaboration.id
+                    ]"
                     class="primary-button"
-                    (click)="
-                      openWorkspace(
-                        collaboration
-                      )
-                    "
                   >
-                    Open workspace
-                  </button>
 
-                }
+                    @if (
+                      collaboration.status ===
+                      'Completed'
+                    ) {
 
-              </div>
+                      View evidence
+
+                    } @else {
+
+                      Open workspace
+
+                      <span aria-hidden="true">
+                        →
+                      </span>
+
+                    }
+
+                  </a>
+
+                </div>
+
+              </footer>
 
             </article>
 
@@ -486,12 +511,11 @@
     }
 
 
-    <!-- ======================================
+    <!-- =========================================
          FIND OPPORTUNITIES
-    ======================================= -->
+    ========================================== -->
     @if (
-      activeTab ===
-      'opportunities'
+      activeTab === 'opportunities'
     ) {
 
       <section class="tab-content">
@@ -499,38 +523,45 @@
         <div class="section-heading">
 
           <div>
+
             <h2>
-              Find something worth building
+              Find Opportunities
             </h2>
 
             <p>
-              Opportunities selected around
-              your skills and current goal.
+              Find practical projects,
+              skill exchanges and short
+              collaborations that fit your goals.
             </p>
+
           </div>
 
         </div>
 
 
         <!-- SEARCH -->
-        <div class="opportunity-search">
+        <div class="opportunity-toolbar">
 
-          <div class="search-field">
+          <label class="search-box">
 
-            <span aria-hidden="true">
+            <span
+              class="search-box__icon"
+              aria-hidden="true"
+            >
               ⌕
             </span>
 
             <input
               type="search"
-              placeholder="Search projects or skills..."
+              placeholder="Search by project, person or skill"
               [(ngModel)]="searchQuery"
             />
 
-          </div>
+          </label>
 
 
           <select
+            class="type-filter"
             [(ngModel)]="selectedType"
             aria-label="Filter collaboration type"
           >
@@ -538,6 +569,7 @@
             <option value="">
               All types
             </option>
+
 
             @for (
               type of collaborationTypes;
@@ -562,7 +594,7 @@
 
             <button
               type="button"
-              class="clear-button"
+              class="clear-filter"
               (click)="clearFilters()"
             >
               Clear
@@ -573,6 +605,7 @@
         </div>
 
 
+        <!-- RESULTS -->
         <div class="opportunity-grid">
 
           @for (
@@ -582,53 +615,51 @@
 
             <article class="opportunity-card">
 
-              <div class="opportunity-header">
+              <!-- PERSON -->
+              <div class="opportunity-card__top">
 
-                <div class="opportunity-person">
+                <a
+                  [routerLink]="[
+                    '/people',
+                    opportunity.ownerId
+                  ]"
+                  class="opportunity-person"
+                >
 
-                  <a
-                    [routerLink]="[
-                      '/people',
-                      opportunity.ownerId
-                    ]"
-                    class="person-avatar person-avatar--small"
-                  >
+                  <span class="person-avatar">
                     {{
                       getInitials(
                         opportunity.owner
                       )
                     }}
-                  </a>
-
+                  </span>
 
                   <div>
 
-                    <a
-                      [routerLink]="[
-                        '/people',
-                        opportunity.ownerId
-                      ]"
-                    >
+                    <strong>
                       {{ opportunity.owner }}
-                    </a>
+                    </strong>
 
                     <span>
-                      {{ opportunity.ownerRole }}
+                      {{
+                        opportunity.ownerRole
+                      }}
                     </span>
 
                   </div>
 
-                </div>
+                </a>
 
 
                 <span class="match-badge">
-                  {{ opportunity.match }}% match
+                  {{ opportunity.match }}%
+                  match
                 </span>
 
               </div>
 
 
-              <div class="opportunity-body">
+              <div class="opportunity-card__body">
 
                 <span
                   [class]="
@@ -646,15 +677,15 @@
                 </h3>
 
 
-                <p>
+                <p class="opportunity-description">
                   {{ opportunity.description }}
                 </p>
 
 
-                <!-- DETAILS -->
-                <div class="opportunity-details">
+                <div class="opportunity-meta">
 
                   <div>
+
                     <span>
                       Looking for
                     </span>
@@ -664,10 +695,12 @@
                         opportunity.lookingFor
                       }}
                     </strong>
+
                   </div>
 
 
                   <div>
+
                     <span>
                       Commitment
                     </span>
@@ -677,20 +710,23 @@
                         opportunity.commitment
                       }}
                     </strong>
+
                   </div>
 
+                </div>
 
-                  <div>
-                    <span>
-                      Experience
-                    </span>
 
-                    <strong>
-                      {{
-                        opportunity.experienceLevel
-                      }}
-                    </strong>
-                  </div>
+                <div class="experience-row">
+
+                  <span>
+                    Experience
+                  </span>
+
+                  <strong>
+                    {{
+                      opportunity.experienceLevel
+                    }}
+                  </strong>
 
                 </div>
 
@@ -710,70 +746,63 @@
 
                 </div>
 
+              </div>
 
-                <div class="interest-info">
 
-                  <span>
-                    ◉
-                  </span>
+              <footer class="opportunity-card__footer">
 
-                  <p>
-                    <strong>
-                      {{
-                        opportunity.interestedPeople
-                      }}
-                    </strong>
+                <span class="interest-count">
+                  {{
+                    opportunity.interestedPeople
+                  }}
+                  people interested
+                </span>
 
-                    people are interested
-                  </p>
+
+                <div>
+
+                  <button
+                    type="button"
+                    class="save-button"
+                    [class.save-button--active]="
+                      opportunity.saved
+                    "
+                    (click)="
+                      toggleSaveOpportunity(
+                        opportunity
+                      )
+                    "
+                  >
+                    {{
+                      opportunity.saved
+                        ? 'Saved'
+                        : 'Save'
+                    }}
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="primary-button"
+                    [disabled]="
+                      opportunity.applied
+                    "
+                    (click)="
+                      applyToOpportunity(
+                        opportunity
+                      )
+                    "
+                  >
+                    {{
+                      opportunity.applied
+                        ? 'Interest sent'
+                        : 'I’m interested'
+                    }}
+                  </button>
 
                 </div>
 
-              </div>
-
-
-              <div class="opportunity-footer">
-
-                <button
-                  type="button"
-                  class="save-button"
-                  [class.save-button--saved]="
-                    opportunity.saved
-                  "
-                  (click)="
-                    toggleSaveOpportunity(
-                      opportunity
-                    )
-                  "
-                >
-                  {{
-                    opportunity.saved
-                      ? 'Saved'
-                      : 'Save'
-                  }}
-                </button>
-
-
-                <button
-                  type="button"
-                  class="primary-button"
-                  [disabled]="
-                    opportunity.applied
-                  "
-                  (click)="
-                    applyToOpportunity(
-                      opportunity
-                    )
-                  "
-                >
-                  {{
-                    opportunity.applied
-                      ? 'Interest sent'
-                      : 'I’m interested'
-                  }}
-                </button>
-
-              </div>
+              </footer>
 
             </article>
 
@@ -781,7 +810,9 @@
 
             <div class="empty-state">
 
-              <span>◇</span>
+              <div class="empty-state__icon">
+                ⌕
+              </div>
 
               <h3>
                 No opportunities found
@@ -794,6 +825,7 @@
 
               <button
                 type="button"
+                class="secondary-button"
                 (click)="clearFilters()"
               >
                 Clear filters
@@ -810,9 +842,9 @@
     }
 
 
-    <!-- ======================================
+    <!-- =========================================
          REQUESTS
-    ======================================= -->
+    ========================================== -->
     @if (
       activeTab === 'requests'
     ) {
@@ -822,14 +854,16 @@
         <div class="section-heading">
 
           <div>
+
             <h2>
-              Connection Requests
+              Collaboration Requests
             </h2>
 
             <p>
-              People who want to work,
-              learn or exchange skills with you.
+              Review why someone wants
+              to work with you before deciding.
             </p>
+
           </div>
 
         </div>
@@ -845,7 +879,7 @@
             <article class="request-card">
 
               <!-- PERSON -->
-              <div class="request-person">
+              <div class="request-card__person">
 
                 <a
                   [routerLink]="[
@@ -864,31 +898,27 @@
 
                 <div class="request-person-info">
 
-                  <div>
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      request.personId
+                    ]"
+                    class="request-name"
+                  >
+                    {{ request.name }}
+                  </a>
 
-                    <a
-                      [routerLink]="[
-                        '/people',
-                        request.personId
-                      ]"
-                      class="request-name"
-                    >
-                      {{ request.name }}
-                    </a>
-
-
-                    <span class="match-badge">
-                      {{ request.match }}%
-                    </span>
-
-                  </div>
-
-
-                  <p>
+                  <span>
                     {{ request.role }}
-                  </p>
+                  </span>
 
                 </div>
+
+
+                <span class="match-badge">
+                  {{ request.match }}%
+                  match
+                </span>
 
 
                 <span
@@ -904,41 +934,25 @@
               </div>
 
 
-              <div class="request-body">
+              <!-- REQUEST CONTENT -->
+              <div class="request-content">
 
-                <div class="request-purpose">
-
-                  <span>
-                    WANTS TO CONNECT FOR
-                  </span>
-
-                  <strong>
-                    {{ request.purpose }}
-                  </strong>
-
-                </div>
+                <span class="purpose-badge">
+                  {{ request.purpose }}
+                </span>
 
 
-                <div class="request-message">
-
-                  <span>
-                    “
-                  </span>
-
-                  <p>
-                    {{ request.message }}
-                  </p>
-
-                </div>
+                <p class="request-message">
+                  “{{ request.message }}”
+                </p>
 
 
-                <!-- MUTUAL VALUE -->
                 <div class="request-exchange">
 
-                  <div>
+                  <div class="request-exchange__side">
 
-                    <span>
-                      THEY CAN OFFER
+                    <span class="exchange-heading">
+                      THEY CAN HELP WITH
                     </span>
 
 
@@ -962,15 +976,15 @@
                   </div>
 
 
-                  <div class="request-exchange-icon">
+                  <div class="request-exchange__arrow">
                     ↔
                   </div>
 
 
-                  <div>
+                  <div class="request-exchange__side">
 
-                    <span>
-                      THEY WANT TO LEARN
+                    <span class="exchange-heading">
+                      THEY WANT HELP WITH
                     </span>
 
 
@@ -998,16 +1012,17 @@
               </div>
 
 
-              <div class="request-footer">
+              <!-- FOOTER -->
+              <footer class="request-card__footer">
 
                 <a
                   [routerLink]="[
                     '/people',
                     request.personId
                   ]"
-                  class="secondary-button"
+                  class="text-link"
                 >
-                  View profile
+                  View full profile
                 </a>
 
 
@@ -1016,34 +1031,38 @@
                   'Pending'
                 ) {
 
-                  <button
-                    type="button"
-                    class="decline-button"
-                    (click)="
-                      declineRequest(
-                        request
-                      )
-                    "
-                  >
-                    Decline
-                  </button>
+                  <div class="request-actions">
+
+                    <button
+                      type="button"
+                      class="decline-button"
+                      (click)="
+                        declineRequest(
+                          request
+                        )
+                      "
+                    >
+                      Decline
+                    </button>
 
 
-                  <button
-                    type="button"
-                    class="primary-button"
-                    (click)="
-                      acceptRequest(
-                        request
-                      )
-                    "
-                  >
-                    Accept
-                  </button>
+                    <button
+                      type="button"
+                      class="primary-button"
+                      (click)="
+                        acceptRequest(
+                          request
+                        )
+                      "
+                    >
+                      Accept request
+                    </button>
+
+                  </div>
 
                 }
 
-              </div>
+              </footer>
 
             </article>
 
