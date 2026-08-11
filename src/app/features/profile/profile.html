@@ -1,0 +1,894 @@
+<div class="profile-page">
+
+  <div class="profile-container">
+
+    <!-- =====================================
+         PROFILE HEADER
+    ====================================== -->
+    <section class="profile-header-card">
+
+      <div class="profile-cover"></div>
+
+      <div class="profile-header-content">
+
+        <div class="profile-header-main">
+
+          <div class="profile-avatar">
+            {{ getInitials(profile.name) }}
+          </div>
+
+          <div class="profile-identity">
+
+            <div class="profile-name-row">
+              <h1>{{ profile.name }}</h1>
+
+              <span class="availability-badge">
+                {{ profile.availability }}
+              </span>
+            </div>
+
+            <p class="profile-role">
+              {{ profile.role }}
+            </p>
+
+            <p class="profile-location">
+              {{ profile.location }}
+            </p>
+
+          </div>
+
+          <button
+            type="button"
+            class="edit-profile-button"
+            (click)="openEditProfile()"
+          >
+            Edit profile
+          </button>
+
+        </div>
+
+
+        <p class="profile-about-preview">
+          {{ profile.about }}
+        </p>
+
+
+        <div class="profile-summary-stats">
+
+          <div>
+            <strong>{{ projects.length }}</strong>
+            <span>Projects</span>
+          </div>
+
+          <div>
+            <strong>{{ skills.length }}</strong>
+            <span>Skills</span>
+          </div>
+
+          <div>
+            <strong>{{ collaborations.length }}</strong>
+            <span>Collaborations</span>
+          </div>
+
+          <div>
+            <strong>11</strong>
+            <span>Peer verifications</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =====================================
+         MAIN LAYOUT
+    ====================================== -->
+    <div class="profile-layout">
+
+      <div class="profile-main">
+
+        <!-- CURRENT GOAL -->
+        <section class="profile-section goal-section">
+
+          <div class="section-heading">
+
+            <div>
+              <span class="section-label">
+                CURRENT INTENT
+              </span>
+
+              <h2>
+                What I'm working toward
+              </h2>
+            </div>
+
+            <a
+              routerLink="/intents"
+              class="text-link"
+            >
+              Manage
+            </a>
+
+          </div>
+
+
+          <h3 class="goal-title">
+            {{ profile.currentGoal }}
+          </h3>
+
+          <p class="goal-description">
+            {{ profile.goalDescription }}
+          </p>
+
+
+          <div class="goal-exchange">
+
+            <div>
+              <span class="goal-label">
+                I CAN HELP WITH
+              </span>
+
+              <div class="skill-tags">
+
+                @for (
+                  skill of profile.offers;
+                  track skill
+                ) {
+                  <span class="skill-tag skill-tag--offer">
+                    {{ skill }}
+                  </span>
+                }
+
+              </div>
+            </div>
+
+
+            <div class="goal-arrow">
+              ↔
+            </div>
+
+
+            <div>
+              <span class="goal-label">
+                I'M DEVELOPING
+              </span>
+
+              <div class="skill-tags">
+
+                @for (
+                  skill of profile.developing;
+                  track skill
+                ) {
+                  <span class="skill-tag skill-tag--learn">
+                    {{ skill }}
+                  </span>
+                }
+
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- ABOUT -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <div>
+              <h2>About</h2>
+
+              <p>
+                A short introduction to your professional journey.
+              </p>
+            </div>
+          </div>
+
+          <p class="about-text">
+            {{ profile.about }}
+          </p>
+
+        </section>
+
+
+        <!-- SKILLS & EVIDENCE -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>Skills & Evidence</h2>
+
+              <p>
+                Skills backed by projects, collaborations and peer verification.
+              </p>
+            </div>
+
+            <a
+              routerLink="/skills"
+              class="text-link"
+            >
+              Manage skills
+            </a>
+
+          </div>
+
+
+          <div class="skills-list">
+
+            @for (
+              skill of skills;
+              track skill.name
+            ) {
+
+              <article class="skill-item">
+
+                <div class="skill-item__main">
+
+                  <div>
+                    <h3>
+                      {{ skill.name }}
+                    </h3>
+
+                    <p>
+                      {{ skill.evidence }}
+                    </p>
+                  </div>
+
+                  <span
+                    [class]="
+                      getSkillLevelClass(skill.level)
+                    "
+                  >
+                    {{ skill.level }}
+                  </span>
+
+                </div>
+
+
+                <div class="skill-verification">
+
+                  @if (
+                    skill.verificationCount > 0
+                  ) {
+                    <span class="verification-icon">
+                      ✓
+                    </span>
+
+                    <span>
+                      Verified by
+                      <strong>
+                        {{ skill.verificationCount }}
+                      </strong>
+                      collaborators
+                    </span>
+                  } @else {
+                    <span class="verification-empty">
+                      Build more evidence through collaboration
+                    </span>
+                  }
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- PROJECTS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>Projects</h2>
+
+              <p>
+                Work that demonstrates what you can build.
+              </p>
+            </div>
+
+            <a
+              routerLink="/projects"
+              class="text-link"
+            >
+              View all
+            </a>
+
+          </div>
+
+
+          <div class="project-list">
+
+            @for (
+              project of projects;
+              track project.id
+            ) {
+
+              <article class="project-item">
+
+                <div class="project-item__heading">
+
+                  <div>
+                    <h3>
+                      {{ project.title }}
+                    </h3>
+
+                    <span
+                      [class]="
+                        getStatusClass(project.status)
+                      "
+                    >
+                      {{ project.status }}
+                    </span>
+                  </div>
+
+                  <a
+                    [routerLink]="[
+                      '/projects',
+                      project.id
+                    ]"
+                    class="project-arrow"
+                    aria-label="View project"
+                  >
+                    →
+                  </a>
+
+                </div>
+
+                <p>
+                  {{ project.description }}
+                </p>
+
+                <div class="skill-tags">
+
+                  @for (
+                    skill of project.skills;
+                    track skill
+                  ) {
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+                  }
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- COLLABORATIONS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>Collaborations</h2>
+
+              <p>
+                Professional relationships built through doing.
+              </p>
+            </div>
+
+            <a
+              routerLink="/collaborations"
+              class="text-link"
+            >
+              View all
+            </a>
+
+          </div>
+
+
+          <div class="collaboration-list">
+
+            @for (
+              collaboration of collaborations;
+              track collaboration.id
+            ) {
+
+              <article class="collaboration-item">
+
+                <div class="collaboration-avatar">
+                  {{
+                    getInitials(
+                      collaboration.collaborator
+                    )
+                  }}
+                </div>
+
+
+                <div class="collaboration-content">
+
+                  <div class="collaboration-heading">
+
+                    <div>
+                      <span>
+                        {{ collaboration.type }}
+                      </span>
+
+                      <h3>
+                        {{ collaboration.title }}
+                      </h3>
+                    </div>
+
+                    <span
+                      [class]="
+                        getStatusClass(
+                          collaboration.status
+                        )
+                      "
+                    >
+                      {{ collaboration.status }}
+                    </span>
+
+                  </div>
+
+                  <p>
+                    With
+                    <strong>
+                      {{ collaboration.collaborator }}
+                    </strong>
+                  </p>
+
+                  <div class="skill-tags">
+
+                    @for (
+                      skill of collaboration.skills;
+                      track skill
+                    ) {
+                      <span class="skill-tag">
+                        {{ skill }}
+                      </span>
+                    }
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- EXPERIENCE -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <div>
+              <h2>Experience</h2>
+
+              <p>
+                Professional and practical experience.
+              </p>
+            </div>
+          </div>
+
+
+          @for (
+            experience of experiences;
+            track experience.company
+          ) {
+
+            <article class="experience-item">
+
+              <div class="experience-logo">
+                {{
+                  experience.company.charAt(0)
+                }}
+              </div>
+
+              <div>
+
+                <h3>
+                  {{ experience.role }}
+                </h3>
+
+                <strong>
+                  {{ experience.company }}
+                </strong>
+
+                <span class="experience-duration">
+                  {{ experience.duration }}
+                </span>
+
+                <p>
+                  {{ experience.description }}
+                </p>
+
+                <div class="skill-tags">
+
+                  @for (
+                    skill of experience.skills;
+                    track skill
+                  ) {
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+                  }
+
+                </div>
+
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+
+        <!-- EDUCATION -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <div>
+              <h2>Education</h2>
+            </div>
+          </div>
+
+
+          @for (
+            item of education;
+            track item.institution
+          ) {
+
+            <article class="education-item">
+
+              <div class="education-icon">
+                U
+              </div>
+
+              <div>
+                <h3>
+                  {{ item.qualification }}
+                </h3>
+
+                <strong>
+                  {{ item.institution }}
+                </strong>
+
+                <span>
+                  {{ item.duration }}
+                </span>
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+
+        <!-- CERTIFICATIONS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <div>
+              <h2>Certifications</h2>
+
+              <p>
+                Professional credentials and certifications.
+              </p>
+            </div>
+          </div>
+
+
+          <div class="certification-list">
+
+            @for (
+              certification of certifications;
+              track certification.name
+            ) {
+
+              <article class="certification-item">
+
+                <div class="certification-icon">
+                  ✓
+                </div>
+
+                <div>
+                  <h3>
+                    {{ certification.name }}
+                  </h3>
+
+                  <p>
+                    {{ certification.issuer }}
+                  </p>
+                </div>
+
+                @if (
+                  certification.verified
+                ) {
+                  <span class="verified-badge">
+                    Verified
+                  </span>
+                }
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <!-- =====================================
+           RIGHT COLUMN
+      ====================================== -->
+      <aside class="profile-sidebar">
+
+        <!-- EVIDENCE -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-heading">
+            <h2>Professional Evidence</h2>
+
+            <p>
+              Strength of your CareerFlow profile.
+            </p>
+          </div>
+
+
+          <div class="evidence-score">
+
+            <div class="evidence-score__top">
+              <span>Evidence strength</span>
+
+              <strong>
+                {{ profileStrength }}%
+              </strong>
+            </div>
+
+            <div class="progress-track">
+              <span
+                [style.width.%]="profileStrength"
+              ></span>
+            </div>
+
+            <small>
+              Strong
+            </small>
+
+          </div>
+
+
+          <div class="evidence-stat">
+
+            <span>Projects completed</span>
+            <strong>5</strong>
+
+          </div>
+
+          <div class="evidence-stat">
+
+            <span>Peer verifications</span>
+            <strong>11</strong>
+
+          </div>
+
+          <div class="evidence-stat">
+
+            <span>People collaborated with</span>
+            <strong>7</strong>
+
+          </div>
+
+          <div class="evidence-stat">
+
+            <span>People helped</span>
+            <strong>6</strong>
+
+          </div>
+
+        </section>
+
+
+        <!-- NEXT STEP -->
+        <section class="sidebar-card next-step-card">
+
+          <span class="next-step-icon">
+            ✦
+          </span>
+
+          <span class="section-label">
+            NEXT PROFILE STEP
+          </span>
+
+          <h2>
+            Add deployment evidence
+          </h2>
+
+          <p>
+            Completing a Docker or CI/CD collaboration would strengthen your
+            backend engineering profile.
+          </p>
+
+          <a
+            routerLink="/discover"
+          >
+            Find an opportunity
+            <span>→</span>
+          </a>
+
+        </section>
+
+
+        <!-- AVAILABILITY -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-heading">
+            <h2>Available for</h2>
+          </div>
+
+          <div class="availability-list">
+
+            <span>
+              <i></i>
+              Project collaboration
+            </span>
+
+            <span>
+              <i></i>
+              Skill exchange
+            </span>
+
+            <span>
+              <i></i>
+              Micro collaboration
+            </span>
+
+          </div>
+
+        </section>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+       EDIT PROFILE MODAL
+  ====================================== -->
+  @if (isEditing) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeEditProfile()"
+    >
+
+      <section
+        class="edit-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-profile-title"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="edit-modal__header">
+
+          <div>
+            <h2 id="edit-profile-title">
+              Edit profile
+            </h2>
+
+            <p>
+              Update your basic professional information.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            aria-label="Close"
+            (click)="closeEditProfile()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="edit-modal__body">
+
+          <div class="form-field">
+            <label for="profile-name">
+              Full name
+            </label>
+
+            <input
+              id="profile-name"
+              type="text"
+              [(ngModel)]="editForm.name"
+            />
+          </div>
+
+
+          <div class="form-field">
+            <label for="profile-role">
+              Professional title
+            </label>
+
+            <input
+              id="profile-role"
+              type="text"
+              [(ngModel)]="editForm.role"
+            />
+          </div>
+
+
+          <div class="form-field">
+            <label for="profile-location">
+              Location
+            </label>
+
+            <input
+              id="profile-location"
+              type="text"
+              [(ngModel)]="editForm.location"
+            />
+          </div>
+
+
+          <div class="form-field">
+            <label for="profile-about">
+              About
+            </label>
+
+            <textarea
+              id="profile-about"
+              rows="5"
+              [(ngModel)]="editForm.about"
+            ></textarea>
+          </div>
+
+        </div>
+
+
+        <div class="edit-modal__footer">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="closeEditProfile()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="saveProfile()"
+          >
+            Save changes
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  }
+
+</div>
