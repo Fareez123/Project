@@ -1,0 +1,1142 @@
+<div class="network-page">
+
+  <div class="network-container">
+
+    <!-- ========================================
+         PAGE HEADER
+    ========================================= -->
+    <section class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          YOUR PROFESSIONAL CIRCLE
+        </span>
+
+        <h1>
+          Network
+        </h1>
+
+        <p>
+          Build useful professional relationships
+          around shared goals, skills and
+          collaboration — not follower counts.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         SUMMARY
+    ========================================= -->
+    <section class="network-summary">
+
+      <div class="summary-item">
+
+        <strong>
+          {{ connections.length }}
+        </strong>
+
+        <span>
+          Meaningful connections
+        </span>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <strong>
+          {{ pendingRequestCount }}
+        </strong>
+
+        <span>
+          Pending requests
+        </span>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <strong>
+          {{ suggestions.length }}
+        </strong>
+
+        <span>
+          Suggested people
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================================
+         TABS
+    ========================================= -->
+    <nav
+      class="network-tabs"
+      aria-label="Network sections"
+    >
+
+      <button
+        type="button"
+        class="network-tab"
+        [class.network-tab--active]="
+          activeTab === 'connections'
+        "
+        (click)="setTab('connections')"
+      >
+        My Network
+
+        <span class="tab-count">
+          {{ connections.length }}
+        </span>
+      </button>
+
+
+      <button
+        type="button"
+        class="network-tab"
+        [class.network-tab--active]="
+          activeTab === 'requests'
+        "
+        (click)="setTab('requests')"
+      >
+        Requests
+
+        @if (
+          pendingRequestCount > 0
+        ) {
+
+          <span class="tab-count tab-count--alert">
+            {{ pendingRequestCount }}
+          </span>
+
+        }
+      </button>
+
+
+      <button
+        type="button"
+        class="network-tab"
+        [class.network-tab--active]="
+          activeTab === 'suggested'
+        "
+        (click)="setTab('suggested')"
+      >
+        Suggested Connections
+      </button>
+
+    </nav>
+
+
+    <!-- ========================================
+         ACTION MESSAGE
+    ========================================= -->
+    @if (actionMessage) {
+
+      <div class="action-message">
+
+        <span class="action-message__icon">
+          ✓
+        </span>
+
+        <p>
+          {{ actionMessage }}
+        </p>
+
+        <button
+          type="button"
+          aria-label="Close message"
+          (click)="actionMessage = ''"
+        >
+          ×
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- ========================================
+         MY NETWORK
+    ========================================= -->
+    @if (
+      activeTab === 'connections'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h2>
+              My Network
+            </h2>
+
+            <p>
+              People you've connected with
+              for a specific professional reason.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="network-search">
+
+          <label class="search-box">
+
+            <span
+              class="search-icon"
+              aria-hidden="true"
+            >
+              ⌕
+            </span>
+
+            <input
+              type="search"
+              placeholder="Search your network by person, role or skill"
+              [(ngModel)]="searchQuery"
+            />
+
+          </label>
+
+
+          @if (searchQuery) {
+
+            <button
+              type="button"
+              class="clear-button"
+              (click)="clearSearch()"
+            >
+              Clear
+            </button>
+
+          }
+
+        </div>
+
+
+        <!-- CONNECTIONS -->
+        <div class="connection-list">
+
+          @for (
+            connection of filteredConnections;
+            track connection.id
+          ) {
+
+            <article class="connection-card">
+
+              <!-- PERSON HEADER -->
+              <div class="connection-card__header">
+
+                <div class="person-section">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      connection.personId
+                    ]"
+                    class="person-avatar"
+                  >
+                    {{
+                      getInitials(
+                        connection.name
+                      )
+                    }}
+
+                    @if (
+                      connection.online
+                    ) {
+
+                      <span
+                        class="online-indicator"
+                        aria-label="Online"
+                      ></span>
+
+                    }
+
+                  </a>
+
+
+                  <div class="person-info">
+
+                    <div class="person-name-row">
+
+                      <a
+                        [routerLink]="[
+                          '/people',
+                          connection.personId
+                        ]"
+                        class="person-name"
+                      >
+                        {{ connection.name }}
+                      </a>
+
+
+                      <span class="connected-badge">
+                        ✓ Connected
+                      </span>
+
+                    </div>
+
+
+                    <span class="person-role">
+                      {{ connection.role }}
+                    </span>
+
+
+                    <span class="person-location">
+                      {{ connection.location }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <span class="match-badge">
+                  {{ connection.match }}%
+                  match
+                </span>
+
+              </div>
+
+
+              <!-- CONNECTION PURPOSE -->
+              <div class="connection-purpose">
+
+                <span class="purpose-label">
+                  CONNECTED FOR
+                </span>
+
+                <strong>
+                  {{ connection.purpose }}
+                </strong>
+
+
+                <span class="connected-since">
+                  Since
+                  {{ connection.connectedSince }}
+                </span>
+
+              </div>
+
+
+              <!-- SKILL EXCHANGE -->
+              <div class="skill-exchange">
+
+                <div class="skill-side">
+
+                  <span class="skill-heading">
+                    THEY CAN HELP WITH
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of connection.offers;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--offer"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+
+                <div class="exchange-arrow">
+                  ↔
+                </div>
+
+
+                <div class="skill-side">
+
+                  <span class="skill-heading">
+                    THEY WANT HELP WITH
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of connection.wants;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--learn"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- SHARED GOAL -->
+              <div class="shared-goal">
+
+                <span class="shared-goal__icon">
+                  ◎
+                </span>
+
+
+                <div>
+
+                  <span>
+                    SHARED GOAL
+                  </span>
+
+                  <strong>
+                    {{ connection.sharedGoal }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <!-- ACTIVE COLLABORATION -->
+              @if (
+                connection.collaboration &&
+                connection.collaborationId
+              ) {
+
+                <div class="active-collaboration">
+
+                  <div>
+
+                    <span class="active-label">
+                      ACTIVE COLLABORATION
+                    </span>
+
+                    <strong>
+                      {{
+                        connection.collaboration
+                      }}
+                    </strong>
+
+                  </div>
+
+
+                  <a
+                    [routerLink]="[
+                      '/collaborate',
+                      connection.collaborationId
+                    ]"
+                    class="collaboration-link"
+                  >
+                    Open workspace
+                    <span>→</span>
+                  </a>
+
+                </div>
+
+              }
+
+
+              <!-- FOOTER -->
+              <footer class="connection-card__footer">
+
+                <button
+                  type="button"
+                  class="remove-button"
+                  (click)="
+                    removeConnection(
+                      connection
+                    )
+                  "
+                >
+                  Remove connection
+                </button>
+
+
+                <div class="connection-actions">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      connection.personId
+                    ]"
+                    class="secondary-button"
+                  >
+                    View profile
+                  </a>
+
+
+                  <button
+                    type="button"
+                    class="primary-button"
+                    (click)="
+                      messagePerson(
+                        connection.name
+                      )
+                    "
+                  >
+                    Message
+                  </button>
+
+                </div>
+
+              </footer>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <div class="empty-state__icon">
+                ◎
+              </div>
+
+              <h3>
+                No connections found
+              </h3>
+
+              <p>
+                Try another name, role
+                or skill.
+              </p>
+
+
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="clearSearch()"
+              >
+                Clear search
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- ========================================
+         REQUESTS
+    ========================================= -->
+    @if (
+      activeTab === 'requests'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h2>
+              Connection Requests
+            </h2>
+
+            <p>
+              Understand why someone wants
+              to connect before accepting.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="request-list">
+
+          @for (
+            request of requests;
+            track request.id
+          ) {
+
+            <article class="request-card">
+
+              <!-- PERSON -->
+              <div class="request-card__header">
+
+                <div class="person-section">
+
+                  <a
+                    [routerLink]="[
+                      '/people',
+                      request.personId
+                    ]"
+                    class="person-avatar"
+                  >
+                    {{
+                      getInitials(
+                        request.name
+                      )
+                    }}
+                  </a>
+
+
+                  <div class="person-info">
+
+                    <a
+                      [routerLink]="[
+                        '/people',
+                        request.personId
+                      ]"
+                      class="person-name"
+                    >
+                      {{ request.name }}
+                    </a>
+
+
+                    <span class="person-role">
+                      {{ request.role }}
+                    </span>
+
+
+                    <span class="person-location">
+                      {{ request.location }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div class="request-header-right">
+
+                  <span class="match-badge">
+                    {{ request.match }}%
+                    match
+                  </span>
+
+
+                  <span
+                    [class]="
+                      getRequestStatusClass(
+                        request.status
+                      )
+                    "
+                  >
+                    {{ request.status }}
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- PURPOSE -->
+              <div class="request-purpose">
+
+                <span>
+                  Wants to connect for
+                </span>
+
+                <strong>
+                  {{ request.purpose }}
+                </strong>
+
+              </div>
+
+
+              <!-- MESSAGE -->
+              <blockquote class="request-message">
+                “{{ request.message }}”
+              </blockquote>
+
+
+              <!-- EXCHANGE -->
+              <div class="skill-exchange">
+
+                <div class="skill-side">
+
+                  <span class="skill-heading">
+                    THEY OFFER
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of request.offers;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--offer"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+
+                <div class="exchange-arrow">
+                  ↔
+                </div>
+
+
+                <div class="skill-side">
+
+                  <span class="skill-heading">
+                    THEY WANT
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of request.wants;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--learn"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- SHARED GOAL -->
+              <div class="shared-goal">
+
+                <span class="shared-goal__icon">
+                  ◎
+                </span>
+
+
+                <div>
+
+                  <span>
+                    SHARED GOAL
+                  </span>
+
+                  <strong>
+                    {{ request.sharedGoal }}
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <!-- FOOTER -->
+              <footer class="request-card__footer">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    request.personId
+                  ]"
+                  class="secondary-button"
+                >
+                  View profile
+                </a>
+
+
+                @if (
+                  request.status ===
+                  'Pending'
+                ) {
+
+                  <div class="request-actions">
+
+                    <button
+                      type="button"
+                      class="decline-button"
+                      (click)="
+                        declineRequest(
+                          request
+                        )
+                      "
+                    >
+                      Decline
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="primary-button"
+                      (click)="
+                        acceptRequest(
+                          request
+                        )
+                      "
+                    >
+                      Accept connection
+                    </button>
+
+                  </div>
+
+                }
+
+              </footer>
+
+            </article>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+
+    <!-- ========================================
+         SUGGESTED CONNECTIONS
+    ========================================= -->
+    @if (
+      activeTab === 'suggested'
+    ) {
+
+      <section class="tab-content">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h2>
+              Suggested Connections
+            </h2>
+
+            <p>
+              People who could complement
+              your skills, goals or current
+              learning direction.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+        <div class="network-search">
+
+          <label class="search-box">
+
+            <span
+              class="search-icon"
+              aria-hidden="true"
+            >
+              ⌕
+            </span>
+
+            <input
+              type="search"
+              placeholder="Search suggested people or skills"
+              [(ngModel)]="searchQuery"
+            />
+
+          </label>
+
+
+          @if (searchQuery) {
+
+            <button
+              type="button"
+              class="clear-button"
+              (click)="clearSearch()"
+            >
+              Clear
+            </button>
+
+          }
+
+        </div>
+
+
+        <div class="suggestion-grid">
+
+          @for (
+            suggestion of filteredSuggestions;
+            track suggestion.id
+          ) {
+
+            <article class="suggestion-card">
+
+              <div class="suggestion-card__header">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    suggestion.personId
+                  ]"
+                  class="person-avatar"
+                >
+                  {{
+                    getInitials(
+                      suggestion.name
+                    )
+                  }}
+                </a>
+
+
+                <span class="match-badge">
+                  {{ suggestion.match }}%
+                  match
+                </span>
+
+              </div>
+
+
+              <div class="suggestion-person">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    suggestion.personId
+                  ]"
+                >
+                  {{ suggestion.name }}
+                </a>
+
+
+                <span>
+                  {{ suggestion.role }}
+                </span>
+
+
+                <small>
+                  {{ suggestion.location }}
+                </small>
+
+              </div>
+
+
+              <!-- WHY -->
+              <div class="why-connect">
+
+                <span>
+                  WHY YOU SHOULD CONNECT
+                </span>
+
+                <p>
+                  {{ suggestion.reason }}
+                </p>
+
+              </div>
+
+
+              <!-- OFFER -->
+              <div class="suggestion-skills">
+
+                <div>
+
+                  <span>
+                    THEY OFFER
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of suggestion.offers;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--offer"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    THEY WANT
+                  </span>
+
+
+                  <div class="skill-list">
+
+                    @for (
+                      skill of suggestion.wants;
+                      track skill
+                    ) {
+
+                      <span
+                        class="skill-tag skill-tag--learn"
+                      >
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <!-- GOAL -->
+              <div class="suggestion-goal">
+
+                <span>
+                  Shared goal
+                </span>
+
+                <strong>
+                  {{ suggestion.sharedGoal }}
+                </strong>
+
+              </div>
+
+
+              <!-- AVAILABLE -->
+              <div class="available-for">
+
+                <span>
+                  Available for
+                </span>
+
+
+                <div>
+
+                  @for (
+                    item of suggestion.availableFor;
+                    track item
+                  ) {
+
+                    <span>
+                      {{ item }}
+                    </span>
+
+                  }
+
+                </div>
+
+              </div>
+
+
+              <!-- FOOTER -->
+              <footer class="suggestion-card__footer">
+
+                <a
+                  [routerLink]="[
+                    '/people',
+                    suggestion.personId
+                  ]"
+                  class="secondary-button"
+                >
+                  View profile
+                </a>
+
+
+                <button
+                  type="button"
+                  class="primary-button"
+                  [disabled]="
+                    suggestion.connected
+                  "
+                  (click)="
+                    connectSuggestion(
+                      suggestion
+                    )
+                  "
+                >
+                  @if (
+                    suggestion.connected
+                  ) {
+
+                    Request sent
+
+                  } @else {
+
+                    Connect with purpose
+
+                  }
+                </button>
+
+              </footer>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <div class="empty-state__icon">
+                ◎
+              </div>
+
+              <h3>
+                No suggestions found
+              </h3>
+
+              <p>
+                Try searching with another
+                skill or name.
+              </p>
+
+
+              <button
+                type="button"
+                class="secondary-button"
+                (click)="clearSearch()"
+              >
+                Clear search
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </div>
+
+</div>
