@@ -1,26 +1,139 @@
-<header class="application-header">
-  <div class="header-title">
-    <p>Enterprise Request System</p>
-  </div>
+<header class="top-navigation">
+  <div class="top-navigation__inner">
 
-  <div class="header-actions">
-    <button
-      type="button"
-      class="notification-button"
-      aria-label="View notifications"
+    <!-- BRAND -->
+    <a
+      routerLink="/dashboard"
+      class="brand"
     >
-      <span>●</span>
-    </button>
+      <span
+        class="brand__mark"
+        aria-hidden="true"
+      >
+        C
+      </span>
 
-    <div class="user-profile">
-      <div class="user-information">
-        <strong>{{ user.name }}</strong>
-        <span>{{ user.role }}</span>
-      </div>
+      <span class="brand__name">
+        CareerFlow
+      </span>
+    </a>
 
-      <div class="user-avatar">
-        {{ user.initials }}
-      </div>
+
+    <!-- MAIN NAVIGATION -->
+    <nav
+      class="main-navigation"
+      aria-label="Main navigation"
+    >
+
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="main-navigation__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="main-navigation__link"
+      >
+        <span
+          class="main-navigation__icon"
+          aria-hidden="true"
+        >
+          ⌂
+        </span>
+
+        <span>Home</span>
+      </a>
+
+
+      <a
+        routerLink="/discover"
+        routerLinkActive="main-navigation__link--active"
+        class="main-navigation__link"
+      >
+        <span
+          class="main-navigation__icon"
+          aria-hidden="true"
+        >
+          ◎
+        </span>
+
+        <span>Discover</span>
+      </a>
+
+
+      <a
+        routerLink="/collaborations"
+        routerLinkActive="main-navigation__link--active"
+        class="main-navigation__link"
+      >
+        <span
+          class="main-navigation__icon"
+          aria-hidden="true"
+        >
+          ◇
+        </span>
+
+        <span>Collaborate</span>
+      </a>
+
+
+      <a
+        routerLink="/network"
+        routerLinkActive="main-navigation__link--active"
+        class="main-navigation__link"
+      >
+        <span
+          class="main-navigation__icon"
+          aria-hidden="true"
+        >
+          ⌁
+        </span>
+
+        <span>Network</span>
+      </a>
+
+    </nav>
+
+
+    <!-- RIGHT SIDE -->
+    <div class="navigation-actions">
+
+      <label class="navigation-search">
+        <span aria-hidden="true">
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          placeholder="Search people or skills"
+          aria-label="Search CareerFlow"
+        />
+      </label>
+
+
+      <a
+        routerLink="/notifications"
+        class="navigation-action"
+        aria-label="Notifications"
+      >
+        <span aria-hidden="true">
+          ♢
+        </span>
+
+        @if (notificationCount > 0) {
+          <span class="notification-badge">
+            {{ notificationCount }}
+          </span>
+        }
+      </a>
+
+
+      <a
+        routerLink="/profile"
+        class="navigation-avatar"
+        aria-label="View profile"
+      >
+        MF
+      </a>
+
     </div>
+
   </div>
 </header>

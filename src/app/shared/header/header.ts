@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
+import {
+  RouterLink,
+  RouterLinkActive
+} from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [
+    RouterLink,
+    RouterLinkActive
+  ],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
 export class Header {
-  user = {
-    name: 'Muhammad Fareez',
-    role: 'Administrator',
-    initials: 'MF'
-  };
+  notificationCount = 3;
 }

@@ -1,133 +1,24 @@
-<div class="careerflow-page">
+<div class="dashboard-page">
 
-  <!-- =========================
-       TOP NAVIGATION
-  ========================== -->
-  <header class="top-navigation">
-    <div class="top-navigation__inner">
+  <div class="dashboard-container">
 
-      <a
-        routerLink="/dashboard"
-        class="brand"
-      >
-        <span class="brand__mark">
-          C
-        </span>
-
-        <span class="brand__name">
-          CareerFlow
-        </span>
-      </a>
-
-      <nav
-        class="main-navigation"
-        aria-label="Main navigation"
-      >
-        <a
-          routerLink="/dashboard"
-          class="main-navigation__link main-navigation__link--active"
-        >
-          <span class="main-navigation__icon">
-            ⌂
-          </span>
-
-          <span>Home</span>
-        </a>
-
-        <a
-          routerLink="/discover"
-          class="main-navigation__link"
-        >
-          <span class="main-navigation__icon">
-            ◎
-          </span>
-
-          <span>Discover</span>
-        </a>
-
-        <a
-          routerLink="/collaborations"
-          class="main-navigation__link"
-        >
-          <span class="main-navigation__icon">
-            ◇
-          </span>
-
-          <span>Collaborate</span>
-        </a>
-
-        <a
-          routerLink="/network"
-          class="main-navigation__link"
-        >
-          <span class="main-navigation__icon">
-            ⌁
-          </span>
-
-          <span>Network</span>
-        </a>
-      </nav>
-
-      <div class="navigation-actions">
-        <label class="navigation-search">
-          <span aria-hidden="true">
-            ⌕
-          </span>
-
-          <input
-            type="search"
-            placeholder="Search people or skills"
-            aria-label="Search CareerFlow"
-          />
-        </label>
-
-        <a
-          routerLink="/notifications"
-          class="navigation-action"
-          aria-label="Notifications"
-        >
-          <span aria-hidden="true">
-            ♢
-          </span>
-
-          @if (notificationCount > 0) {
-            <span class="notification-badge">
-              {{ notificationCount }}
-            </span>
-          }
-        </a>
-
-        <a
-          routerLink="/profile"
-          class="navigation-avatar"
-          aria-label="View profile"
-        >
-          MF
-        </a>
-      </div>
-    </div>
-  </header>
-
-
-  <!-- =========================
-       PAGE
-  ========================== -->
-  <main class="dashboard-layout">
-
-    <!-- =========================
-         LEFT PROFILE
-    ========================== -->
+    <!-- =========================================
+         LEFT PROFILE COLUMN
+    ========================================== -->
     <aside class="dashboard-left">
 
-      <section class="profile-summary">
-        <div class="profile-summary__banner"></div>
+      <section class="profile-card">
 
-        <div class="profile-summary__content">
+        <div class="profile-cover"></div>
+
+        <div class="profile-card__content">
+
           <a
             routerLink="/profile"
             class="profile-avatar"
+            aria-label="View profile"
           >
-            MF
+            {{ getInitials(currentUser.name) }}
           </a>
 
           <a
@@ -151,11 +42,12 @@
 
           <div class="profile-divider"></div>
 
+          <!-- PROFILE STRENGTH -->
           <a
             routerLink="/profile"
-            class="profile-progress"
+            class="profile-strength"
           >
-            <div class="profile-progress__heading">
+            <div class="profile-strength__top">
               <span>Profile evidence</span>
 
               <strong>
@@ -163,66 +55,99 @@
               </strong>
             </div>
 
-            <div class="progress-track">
+            <div
+              class="progress-track"
+              role="progressbar"
+              [attr.aria-valuenow]="currentUser.profileStrength"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
               <span
                 [style.width.%]="currentUser.profileStrength"
               ></span>
             </div>
           </a>
 
-          <div class="profile-mini-stats">
+          <!-- MINI STATS -->
+          <div class="profile-stats">
+
             <a routerLink="/projects">
-              <strong>{{ currentUser.projects }}</strong>
+              <strong>
+                {{ currentUser.projects }}
+              </strong>
+
               <span>Projects</span>
             </a>
 
             <a routerLink="/skills">
-              <strong>{{ currentUser.verifiedSkills }}</strong>
+              <strong>
+                {{ currentUser.verifiedSkills }}
+              </strong>
+
               <span>Skills</span>
             </a>
 
             <a routerLink="/network">
-              <strong>{{ currentUser.collaborators }}</strong>
+              <strong>
+                {{ currentUser.collaborators }}
+              </strong>
+
               <span>People</span>
             </a>
+
           </div>
 
           <a
             routerLink="/profile"
-            class="profile-view-link"
+            class="profile-link"
           >
             View my profile
           </a>
+
         </div>
       </section>
 
+
+      <!-- QUICK LINKS -->
       <section class="quick-links">
+
         <a routerLink="/saved">
-          <span>◇</span>
+          <span aria-hidden="true">
+            ◇
+          </span>
+
           Saved opportunities
         </a>
 
         <a routerLink="/collaborations">
-          <span>↔</span>
+          <span aria-hidden="true">
+            ↔
+          </span>
+
           My collaborations
         </a>
 
         <a routerLink="/verifications">
-          <span>✓</span>
+          <span aria-hidden="true">
+            ✓
+          </span>
+
           Verifications
         </a>
+
       </section>
 
     </aside>
 
 
-    <!-- =========================
-         MAIN FEED
-    ========================== -->
-    <section class="dashboard-main">
+    <!-- =========================================
+         CENTER CONTENT
+    ========================================== -->
+    <section class="dashboard-feed">
 
-      <!-- Greeting -->
-      <div class="welcome-heading">
+      <!-- WELCOME -->
+      <div class="welcome">
+
         <div>
           <h1>
             Good morning, {{ currentUser.firstName }}
@@ -232,29 +157,37 @@
             Here's what could move your career forward today.
           </p>
         </div>
+
       </div>
 
 
-      <!-- CURRENT INTENT -->
+      <!-- =========================================
+           CURRENT INTENT
+      ========================================== -->
       <article class="intent-card">
-        <div class="intent-card__top">
-          <div>
-            <span class="feed-label">
+
+        <div class="intent-card__header">
+
+          <div class="intent-header-labels">
+
+            <span class="section-label">
               YOUR CURRENT GOAL
             </span>
 
-            <span class="active-indicator">
+            <span class="active-badge">
               Active
             </span>
+
           </div>
 
           <a
             routerLink="/intents"
-            class="card-menu"
-            aria-label="Manage current intent"
+            class="more-button"
+            aria-label="Manage current goal"
           >
             ···
           </a>
+
         </div>
 
         <h2>
@@ -265,46 +198,75 @@
           {{ currentIntent.description }}
         </p>
 
-        <div class="intent-skills">
-          <div>
-            <span class="intent-skills__label">
+
+        <!-- SKILL EXCHANGE -->
+        <div class="intent-exchange">
+
+          <div class="intent-skill-group">
+
+            <span class="intent-skill-label">
               I can help with
             </span>
 
             <div class="skill-list">
-              @for (skill of currentIntent.offers; track skill) {
+
+              @for (
+                skill of currentIntent.offers;
+                track skill
+              ) {
                 <span class="skill-tag skill-tag--offer">
                   {{ skill }}
                 </span>
               }
+
             </div>
+
           </div>
 
-          <span class="intent-exchange">
-            ↔
-          </span>
 
-          <div>
-            <span class="intent-skills__label">
+          <div
+            class="exchange-icon"
+            aria-hidden="true"
+          >
+            ↔
+          </div>
+
+
+          <div class="intent-skill-group">
+
+            <span class="intent-skill-label">
               I want to learn
             </span>
 
             <div class="skill-list">
-              @for (skill of currentIntent.wants; track skill) {
+
+              @for (
+                skill of currentIntent.wants;
+                track skill
+              ) {
                 <span class="skill-tag skill-tag--learn">
                   {{ skill }}
                 </span>
               }
+
             </div>
+
           </div>
+
         </div>
 
-        <div class="intent-card__bottom">
-          <div class="intent-match-summary">
-            <div class="match-avatar-stack">
+
+        <!-- INTENT FOOTER -->
+        <div class="intent-footer">
+
+          <div class="intent-match">
+
+            <div class="avatar-stack">
+
               <span>AH</span>
               <span>SL</span>
               <span>DT</span>
+
             </div>
 
             <p>
@@ -312,22 +274,28 @@
                 {{ currentIntent.matches }} people
               </strong>
 
-              match your current goal
+              match your current goal.
             </p>
+
           </div>
 
           <a
             routerLink="/discover"
-            class="primary-link"
+            class="text-link"
           >
             View matches
           </a>
+
         </div>
+
       </article>
 
 
-      <!-- FEED HEADER -->
+      <!-- =========================================
+           FEED HEADING
+      ========================================== -->
       <div class="feed-heading">
+
         <div>
           <h2>For you</h2>
 
@@ -337,9 +305,12 @@
         </div>
 
         <div class="feed-tabs">
+
           <button
             type="button"
-            class="feed-tab feed-tab--active"
+            class="feed-tab"
+            [class.feed-tab--active]="activeFeedTab === 'recommended'"
+            (click)="setFeedTab('recommended')"
           >
             Recommended
           </button>
@@ -347,19 +318,29 @@
           <button
             type="button"
             class="feed-tab"
+            [class.feed-tab--active]="activeFeedTab === 'latest'"
+            (click)="setFeedTab('latest')"
           >
             Latest
           </button>
+
         </div>
+
       </div>
 
 
-      <!-- MUTUAL MATCH FEED -->
-      @for (match of mutualMatches; track match.id) {
+      <!-- =========================================
+           MUTUAL MATCH CARDS
+      ========================================== -->
+      @for (
+        match of displayedMatches;
+        track match.id
+      ) {
 
         <article class="feed-card">
 
           <div class="feed-card__header">
+
             <div class="feed-user">
 
               <a
@@ -369,17 +350,20 @@
                 {{ getInitials(match.name) }}
               </a>
 
-              <div>
+              <div class="feed-user__details">
+
                 <div class="feed-user__name">
+
                   <a
                     [routerLink]="['/people', match.id]"
                   >
                     {{ match.name }}
                   </a>
 
-                  <span class="match-pill">
+                  <span class="match-badge">
                     {{ match.match }}% match
                   </span>
+
                 </div>
 
                 <p>
@@ -389,20 +373,26 @@
                 <span>
                   {{ match.location }}
                 </span>
+
               </div>
+
             </div>
+
 
             <button
               type="button"
-              class="card-menu"
+              class="more-button"
               aria-label="More actions"
             >
               ···
             </button>
+
           </div>
 
+
           <div class="feed-card__body">
-            <span class="feed-label">
+
+            <span class="section-label">
               MUTUAL MATCH
             </span>
 
@@ -414,17 +404,23 @@
               {{ match.description }}
             </p>
 
+
+            <!-- EXCHANGE -->
             <div class="mutual-exchange">
 
-              <div class="exchange-side">
+              <div class="mutual-side">
+
                 <span>You can help with</span>
 
                 <strong>
                   {{ match.youOffer }}
                 </strong>
+
               </div>
 
-              <div class="exchange-arrow">
+
+              <div class="mutual-arrow">
+
                 <span></span>
 
                 <div>
@@ -432,52 +428,77 @@
                 </div>
 
                 <span></span>
+
               </div>
 
-              <div class="exchange-side exchange-side--right">
-                <span>{{ match.firstName }} can help with</span>
+
+              <div class="mutual-side mutual-side--right">
+
+                <span>
+                  {{ match.firstName }} can help with
+                </span>
 
                 <strong>
                   {{ match.theyOffer }}
                 </strong>
+
               </div>
 
             </div>
 
+
+            <!-- SHARED GOAL -->
             <div class="shared-goal">
-              <span>✦</span>
+
+              <span
+                class="shared-goal__icon"
+                aria-hidden="true"
+              >
+                ✦
+              </span>
 
               <div>
-                <small>SHARED GOAL</small>
+                <small>
+                  SHARED GOAL
+                </small>
 
                 <strong>
                   {{ match.sharedGoal }}
                 </strong>
               </div>
+
             </div>
+
           </div>
 
+
           <div class="feed-card__actions">
+
             <a
               [routerLink]="['/people', match.id]"
-              class="secondary-button"
+              class="button-secondary"
             >
               View profile
             </a>
 
             <button
               type="button"
-              class="primary-button"
+              class="button-primary"
+              (click)="connectWithPerson(match)"
             >
               Connect with purpose
             </button>
+
           </div>
 
         </article>
+
       }
 
 
-      <!-- COLLABORATION -->
+      <!-- =========================================
+           COLLABORATION OPPORTUNITIES
+      ========================================== -->
       @for (
         opportunity of collaborationOpportunities;
         track opportunity.id
@@ -486,13 +507,15 @@
         <article class="feed-card">
 
           <div class="feed-card__header">
+
             <div class="feed-user">
 
               <span class="feed-avatar feed-avatar--purple">
                 {{ getInitials(opportunity.owner) }}
               </span>
 
-              <div>
+              <div class="feed-user__details">
+
                 <div class="feed-user__name">
                   <strong>
                     {{ opportunity.owner }}
@@ -506,16 +529,21 @@
                 <span>
                   Looking for a collaborator
                 </span>
+
               </div>
+
             </div>
 
-            <span class="match-pill">
+            <span class="match-badge">
               {{ opportunity.match }}% match
             </span>
+
           </div>
 
+
           <div class="feed-card__body">
-            <span class="feed-label">
+
+            <span class="section-label">
               COLLABORATION OPPORTUNITY
             </span>
 
@@ -526,6 +554,7 @@
             <p>
               {{ opportunity.description }}
             </p>
+
 
             <div class="opportunity-details">
 
@@ -555,7 +584,9 @@
 
             </div>
 
+
             <div class="skill-list">
+
               @for (
                 skill of opportunity.skills;
                 track skill
@@ -564,15 +595,24 @@
                   {{ skill }}
                 </span>
               }
+
             </div>
+
           </div>
 
+
           <div class="feed-card__actions">
+
             <button
               type="button"
-              class="secondary-button"
+              class="button-secondary"
+              (click)="toggleSaveOpportunity(opportunity)"
             >
-              Save
+              {{
+                opportunity.saved
+                  ? 'Saved'
+                  : 'Save'
+              }}
             </button>
 
             <a
@@ -580,43 +620,61 @@
                 '/collaborations',
                 opportunity.id
               ]"
-              class="primary-button"
+              class="button-primary"
             >
               View collaboration
             </a>
+
           </div>
 
         </article>
+
       }
 
 
-      <!-- MICRO COLLABORATION -->
+      <!-- =========================================
+           MICRO COLLABORATION
+      ========================================== -->
       <article class="feed-card">
+
         <div class="feed-card__header">
 
           <div class="feed-user">
+
             <span class="feed-avatar feed-avatar--green">
               NA
             </span>
 
-            <div>
+            <div class="feed-user__details">
+
               <div class="feed-user__name">
-                <strong>Nur Aina</strong>
+                <strong>
+                  Nur Aina
+                </strong>
               </div>
 
-              <p>Junior Software Developer</p>
+              <p>
+                Junior Software Developer
+              </p>
 
-              <span>Posted 2 hours ago</span>
+              <span>
+                Posted 2 hours ago
+              </span>
+
             </div>
+
           </div>
 
-          <span class="micro-badge">
+          <span class="time-badge">
             ~45 min
           </span>
+
         </div>
 
+
         <div class="feed-card__body">
-          <span class="feed-label">
+
+          <span class="section-label">
             MICRO COLLABORATION
           </span>
 
@@ -626,84 +684,118 @@
 
           <p>
             I'm looking for another developer to review my JWT
-            authentication implementation and give feedback on the
+            authentication implementation and provide feedback on the
             controller and service structure.
           </p>
 
-          <div class="skill-list">
-            <span class="skill-tag">Java</span>
-            <span class="skill-tag">Spring Boot</span>
-            <span class="skill-tag">JWT</span>
-            <span class="skill-tag">Code Review</span>
+
+          <div class="skill-list micro-skills">
+
+            <span class="skill-tag">
+              Java
+            </span>
+
+            <span class="skill-tag">
+              Spring Boot
+            </span>
+
+            <span class="skill-tag">
+              JWT
+            </span>
+
+            <span class="skill-tag">
+              Code Review
+            </span>
+
           </div>
 
-          <div class="micro-note">
-            <span>✓</span>
+
+          <div class="evidence-note">
+
+            <span aria-hidden="true">
+              ✓
+            </span>
 
             <p>
-              Completing this can add
-              <strong>peer-verified code review evidence</strong>
+              Completing this could add
+              <strong>
+                peer-verified code review evidence
+              </strong>
               to your profile.
             </p>
+
           </div>
+
         </div>
 
+
         <div class="feed-card__actions">
+
           <button
             type="button"
-            class="secondary-button"
+            class="button-secondary"
           >
             Save
           </button>
 
           <button
             type="button"
-            class="primary-button"
+            class="button-primary"
           >
             I can help
           </button>
+
         </div>
+
       </article>
 
     </section>
 
 
-    <!-- =========================
-         RIGHT SIDEBAR
-    ========================== -->
+    <!-- =========================================
+         RIGHT COLUMN
+    ========================================== -->
     <aside class="dashboard-right">
 
-      <!-- PEOPLE WORTH MEETING -->
-      <section class="side-section">
-        <div class="side-section__heading">
-          <div>
-            <h2>
-              People worth meeting
-            </h2>
 
-            <p>
-              Based on mutual value.
-            </p>
-          </div>
+      <!-- PEOPLE -->
+      <section class="side-card">
+
+        <div class="side-card__header">
+
+          <h2>
+            People worth meeting
+          </h2>
+
+          <p>
+            Based on mutual value.
+          </p>
+
         </div>
 
-        <div class="suggested-people">
+
+        <div class="people-list">
+
           @for (
             person of suggestedPeople;
             track person.id
           ) {
+
             <article class="suggested-person">
 
               <a
                 [routerLink]="['/people', person.id]"
-                class="suggested-person__avatar"
+                class="suggested-avatar"
               >
                 {{ getInitials(person.name) }}
               </a>
 
-              <div class="suggested-person__info">
+
+              <div class="suggested-person__details">
+
                 <a
                   [routerLink]="['/people', person.id]"
+                  class="suggested-name"
                 >
                   {{ person.name }}
                 </a>
@@ -715,37 +807,49 @@
                 <small>
                   {{ person.match }}% mutual match
                 </small>
+
               </div>
+
 
               <button
                 type="button"
-                class="small-connect-button"
+                class="connect-button"
                 aria-label="Connect"
+                (click)="quickConnect(person)"
               >
                 +
               </button>
 
             </article>
+
           }
+
         </div>
+
 
         <a
           routerLink="/discover"
-          class="side-section__footer"
+          class="side-card__footer"
         >
           Discover more people
+
           <span>→</span>
         </a>
+
       </section>
 
 
       <!-- NEXT STEP -->
-      <section class="side-section next-step">
-        <span class="next-step__icon">
+      <section class="side-card next-step-card">
+
+        <span
+          class="next-step-icon"
+          aria-hidden="true"
+        >
           ✦
         </span>
 
-        <span class="feed-label">
+        <span class="section-label">
           YOUR NEXT STEP
         </span>
 
@@ -755,41 +859,49 @@
 
         <p>
           You've already demonstrated Angular and Spring Boot.
-          Completing a Docker collaboration would add another
-          layer of evidence to your backend profile.
+          Completing a Docker collaboration could add stronger
+          deployment evidence to your profile.
         </p>
 
-        <div class="next-step__skills">
+
+        <div class="next-step-skills">
+
           <span>Docker</span>
           <span>Deployment</span>
           <span>DevOps</span>
+
         </div>
+
 
         <a
           routerLink="/discover"
-          class="next-step__action"
+          class="next-step-link"
         >
           Find a Docker collaborator
+
           <span>→</span>
         </a>
+
       </section>
 
 
-      <!-- CURRENT NETWORK -->
-      <section class="side-section network-summary">
-        <div class="side-section__heading">
-          <div>
-            <h2>
-              Your professional circle
-            </h2>
+      <!-- NETWORK -->
+      <section class="side-card network-card">
 
-            <p>
-              Relationships, not follower counts.
-            </p>
-          </div>
+        <div class="side-card__header">
+
+          <h2>
+            Your professional circle
+          </h2>
+
+          <p>
+            Relationships, not follower counts.
+          </p>
+
         </div>
 
-        <div class="network-summary__items">
+
+        <div class="network-stats">
 
           <div>
             <strong>7</strong>
@@ -808,16 +920,20 @@
 
         </div>
 
+
         <a
           routerLink="/network"
-          class="side-section__footer"
+          class="side-card__footer"
         >
           View your network
+
           <span>→</span>
         </a>
+
       </section>
 
     </aside>
 
-  </main>
+  </div>
+
 </div>

@@ -1,117 +1,333 @@
-.application-header {
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
+.top-navigation {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  background: rgb(255 255 255 / 96%);
+
+  backdrop-filter: blur(12px);
+}
+
+.top-navigation__inner {
+  display: flex;
+  align-items: center;
+
+  width: min(1180px, calc(100% - 32px));
+  min-height: 64px;
+
+  margin: 0 auto;
+}
+
+/* ========================================
+   BRAND
+======================================== */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  margin-right: 36px;
+
+  color: #0f172a;
+
+  text-decoration: none;
+}
+
+.brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 8px;
+
+  background: #4f46e5;
+
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.brand__name {
+  font-size: 17px;
+  font-weight: 750;
+
+  letter-spacing: -0.025em;
+}
+
+/* ========================================
+   MAIN NAVIGATION
+======================================== */
+
+.main-navigation {
+  display: flex;
+  align-self: stretch;
+}
+
+.main-navigation__link {
+  position: relative;
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 6px;
 
-  min-height: var(--header-height);
-  padding: 0 24px;
+  min-width: 90px;
 
-  background-color: var(--color-surface);
+  padding: 0 13px;
 
-  border-bottom: 1px solid var(--color-border);
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 550;
+
+  text-decoration: none;
+
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
 }
 
-.header-title p {
-  margin: 0;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  color: var(--color-text-secondary);
+.main-navigation__link:hover {
+  color: #0f172a;
 }
 
-.header-actions {
+.main-navigation__link--active {
+  color: #4f46e5;
+}
+
+.main-navigation__link--active::after {
+  position: absolute;
+
+  right: 14px;
+  bottom: 0;
+  left: 14px;
+
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: #4f46e5;
+
+  content: "";
+}
+
+.main-navigation__icon {
+  font-size: 16px;
+}
+
+/* ========================================
+   RIGHT ACTIONS
+======================================== */
+
+.navigation-actions {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 10px;
+
+  margin-left: auto;
 }
 
-.notification-button {
+/* SEARCH */
+
+.navigation-search {
+  position: relative;
+
   display: flex;
+  align-items: center;
+}
+
+.navigation-search > span {
+  position: absolute;
+  left: 12px;
+
+  color: #94a3b8;
+
+  pointer-events: none;
+}
+
+.navigation-search input {
+  width: 220px;
+  height: 38px;
+
+  padding: 0 13px 0 35px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+
+  background: #f8fafc;
+
+  color: #0f172a;
+
+  font: inherit;
+  font-size: 12px;
+
+  outline: none;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.navigation-search input::placeholder {
+  color: #94a3b8;
+}
+
+.navigation-search input:focus {
+  border-color: #a5b4fc;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px rgb(99 102 241 / 10%);
+}
+
+/* NOTIFICATION */
+
+.navigation-action {
+  position: relative;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
   width: 38px;
   height: 38px;
 
-  color: var(--color-text-secondary);
-  background-color: transparent;
-
-  border: 1px solid var(--color-border);
   border-radius: 50%;
 
-  cursor: pointer;
+  color: #475569;
+
+  font-size: 18px;
+
+  text-decoration: none;
 }
 
-.notification-button:hover {
-  background-color: var(--color-background);
+.navigation-action:hover {
+  background: #f1f5f9;
+
+  color: #0f172a;
 }
 
-.notification-button span {
-  font-size: 10px;
-  color: var(--color-danger);
-}
+.notification-badge {
+  position: absolute;
 
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
+  top: 2px;
+  right: 1px;
 
-.user-information {
-  display: flex;
-  flex-direction: column;
-
-  text-align: right;
-}
-
-.user-information strong {
-  font-size: 13px;
-}
-
-.user-information span {
-  margin-top: 2px;
-
-  font-size: 11px;
-
-  color: var(--color-text-secondary);
-}
-
-.user-avatar {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  width: 39px;
-  height: 39px;
+  min-width: 16px;
+  height: 16px;
 
-  font-size: 13px;
+  padding: 0 4px;
+
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+
+  background: #ef4444;
+
+  color: #ffffff;
+
+  font-size: 8px;
   font-weight: 700;
-
-  color: white;
-  background-color: var(--color-primary);
-
-  border-radius: 50%;
 }
 
-@media (max-width: 600px) {
-  .application-header {
-    padding: 0 16px;
+/* PROFILE */
+
+.navigation-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #e0e7ff;
+
+  color: #4338ca;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  text-decoration: none;
+}
+
+.navigation-avatar:hover {
+  background: #c7d2fe;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1050px) {
+  .navigation-search {
+    display: none;
+  }
+}
+
+@media (max-width: 780px) {
+  .top-navigation__inner {
+    width: min(100% - 24px, 1180px);
   }
 
-  .header-title {
+  .brand {
+    margin-right: 12px;
+  }
+
+  .brand__name {
     display: none;
   }
 
-  .application-header {
-    justify-content: flex-end;
+  .main-navigation__link {
+    min-width: 60px;
+
+    padding: 0 8px;
   }
 
-  .user-information {
+  .main-navigation__link > span:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .top-navigation__inner {
+    min-height: 58px;
+  }
+
+  .main-navigation__link {
+    min-width: 45px;
+  }
+
+  .navigation-actions {
+    gap: 3px;
+  }
+
+  .navigation-action {
     display: none;
   }
 }
