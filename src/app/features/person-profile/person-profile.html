@@ -1,7 +1,1134 @@
-<div class="person-profile-placeholder">
-  <h1>Person Profile</h1>
+<div class="person-profile-page">
 
-  <p>
-    The public CareerFlow profile will be developed next.
-  </p>
+  <div class="person-profile-container">
+
+    <!-- ====================================
+         PROFILE HEADER
+    ===================================== -->
+    <section class="profile-header-card">
+
+      <div class="profile-cover"></div>
+
+
+      <div class="profile-header-content">
+
+        <div class="profile-header-main">
+
+          <div class="profile-avatar">
+            {{ getInitials(person.name) }}
+          </div>
+
+
+          <div class="profile-identity">
+
+            <div class="profile-name-row">
+
+              <h1>
+                {{ person.name }}
+              </h1>
+
+              <span class="match-badge">
+                {{ person.match }}% mutual match
+              </span>
+
+            </div>
+
+
+            <p class="profile-role">
+              {{ person.role }}
+            </p>
+
+            <p class="profile-location">
+              {{ person.location }}
+            </p>
+
+          </div>
+
+
+          <div class="profile-actions">
+
+            <button
+              type="button"
+              class="secondary-button"
+            >
+              Message
+            </button>
+
+
+            <button
+              type="button"
+              class="primary-button"
+              [class.request-sent-button]="requestSent"
+              [disabled]="requestSent"
+              (click)="openConnectModal()"
+            >
+              {{
+                requestSent
+                  ? 'Request sent'
+                  : 'Connect with purpose'
+              }}
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <p class="profile-about-preview">
+          {{ person.about }}
+        </p>
+
+
+        <!-- PROFILE STATS -->
+        <div class="profile-summary-stats">
+
+          <div>
+            <strong>
+              {{ person.projectsCompleted }}
+            </strong>
+
+            <span>
+              Projects
+            </span>
+          </div>
+
+
+          <div>
+            <strong>
+              {{ person.verifiedSkills }}
+            </strong>
+
+            <span>
+              Verified skills
+            </span>
+          </div>
+
+
+          <div>
+            <strong>
+              {{ person.collaborators }}
+            </strong>
+
+            <span>
+              Collaborators
+            </span>
+          </div>
+
+
+          <div>
+            <strong>
+              {{ person.peopleHelped }}
+            </strong>
+
+            <span>
+              People helped
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================
+         MUTUAL MATCH
+    ===================================== -->
+    <section class="mutual-match-card">
+
+      <div class="mutual-match-heading">
+
+        <div>
+          <span class="section-label">
+            WHY YOU MATCH
+          </span>
+
+          <h2>
+            You and {{ person.firstName }}
+            could help each other grow.
+          </h2>
+        </div>
+
+
+        <div class="large-match-score">
+          <strong>
+            {{ person.match }}%
+          </strong>
+
+          <span>
+            match
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="mutual-exchange">
+
+        <!-- THEY OFFER -->
+        <div class="exchange-column">
+
+          <div class="exchange-person">
+
+            <span class="small-avatar">
+              {{ getInitials(person.name) }}
+            </span>
+
+            <div>
+              <span>
+                {{ person.firstName }} can help you with
+              </span>
+
+              <strong>
+                Skills you're developing
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="skill-tags">
+
+            @for (
+              skill of person.theyOffer;
+              track skill
+            ) {
+              <span class="skill-tag skill-tag--offer">
+                {{ skill }}
+              </span>
+            }
+
+          </div>
+
+        </div>
+
+
+        <div class="exchange-center">
+          <span></span>
+
+          <div>
+            ↔
+          </div>
+
+          <span></span>
+        </div>
+
+
+        <!-- YOU OFFER -->
+        <div class="exchange-column">
+
+          <div class="exchange-person">
+
+            <span class="small-avatar small-avatar--you">
+              MF
+            </span>
+
+            <div>
+              <span>
+                You can help {{ person.firstName }} with
+              </span>
+
+              <strong>
+                Skills they want to develop
+              </strong>
+            </div>
+
+          </div>
+
+
+          <div class="skill-tags">
+
+            @for (
+              skill of person.theyWant;
+              track skill
+            ) {
+              <span class="skill-tag skill-tag--learn">
+                {{ skill }}
+              </span>
+            }
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="shared-goal">
+
+        <span class="shared-goal-icon">
+          ✦
+        </span>
+
+        <div>
+          <small>
+            SHARED GOAL
+          </small>
+
+          <strong>
+            {{ person.sharedGoal }}
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ====================================
+         BODY LAYOUT
+    ===================================== -->
+    <div class="profile-layout">
+
+      <!-- MAIN -->
+      <div class="profile-main">
+
+        <!-- CURRENT INTENT -->
+        <section class="profile-section intent-section">
+
+          <span class="section-label">
+            CURRENT INTENT
+          </span>
+
+          <h2>
+            {{ person.currentGoal }}
+          </h2>
+
+          <p>
+            {{ person.goalDescription }}
+          </p>
+
+        </section>
+
+
+        <!-- ABOUT -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <div>
+              <h2>
+                About
+              </h2>
+
+              <p>
+                Professional background and interests.
+              </p>
+            </div>
+          </div>
+
+
+          <p class="about-text">
+            {{ person.about }}
+          </p>
+
+        </section>
+
+
+        <!-- SKILLS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>
+                Skills & Evidence
+              </h2>
+
+              <p>
+                Skills backed by projects,
+                collaborations and peer verification.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="skills-list">
+
+            @for (
+              skill of person.skills;
+              track skill.name
+            ) {
+
+              <article class="skill-item">
+
+                <div class="skill-item-header">
+
+                  <div>
+                    <h3>
+                      {{ skill.name }}
+                    </h3>
+
+                    <p>
+                      {{ skill.evidence }}
+                    </p>
+                  </div>
+
+
+                  <span
+                    [class]="
+                      getSkillLevelClass(
+                        skill.level
+                      )
+                    "
+                  >
+                    {{ skill.level }}
+                  </span>
+
+                </div>
+
+
+                <div class="skill-verification">
+
+                  @if (
+                    skill.verificationCount > 0
+                  ) {
+
+                    <span class="verified-icon">
+                      ✓
+                    </span>
+
+                    <span>
+                      Verified by
+
+                      <strong>
+                        {{
+                          skill.verificationCount
+                        }}
+                      </strong>
+
+                      collaborators
+                    </span>
+
+                  } @else {
+
+                    <span class="no-verification">
+                      Still building evidence
+                    </span>
+
+                  }
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- PROJECTS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>
+                Projects
+              </h2>
+
+              <p>
+                Work demonstrating practical skills.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="project-grid">
+
+            @for (
+              project of person.projects;
+              track project.id
+            ) {
+
+              <article class="project-card">
+
+                <div class="project-card-header">
+
+                  <div>
+
+                    <h3>
+                      {{ project.title }}
+                    </h3>
+
+                    <span
+                      [class]="
+                        getStatusClass(
+                          project.status
+                        )
+                      "
+                    >
+                      {{ project.status }}
+                    </span>
+
+                  </div>
+
+
+                  <a
+                    [routerLink]="[
+                      '/projects',
+                      project.id
+                    ]"
+                    class="arrow-link"
+                  >
+                    →
+                  </a>
+
+                </div>
+
+
+                <p>
+                  {{ project.description }}
+                </p>
+
+
+                <div class="skill-tags">
+
+                  @for (
+                    skill of project.skills;
+                    track skill
+                  ) {
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+                  }
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- COLLABORATIONS -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>
+                Collaborations
+              </h2>
+
+              <p>
+                Evidence created by working
+                with other people.
+              </p>
+            </div>
+
+          </div>
+
+
+          <div class="collaboration-list">
+
+            @for (
+              collaboration of person.collaborations;
+              track collaboration.id
+            ) {
+
+              <article class="collaboration-item">
+
+                <div class="collaboration-avatar">
+                  {{
+                    getInitials(
+                      collaboration.collaborator
+                    )
+                  }}
+                </div>
+
+
+                <div class="collaboration-content">
+
+                  <div class="collaboration-header">
+
+                    <div>
+
+                      <span>
+                        {{ collaboration.type }}
+                      </span>
+
+                      <h3>
+                        {{ collaboration.title }}
+                      </h3>
+
+                    </div>
+
+
+                    <span
+                      [class]="
+                        getStatusClass(
+                          collaboration.status
+                        )
+                      "
+                    >
+                      {{
+                        collaboration.status
+                      }}
+                    </span>
+
+                  </div>
+
+
+                  <p>
+                    With
+
+                    <strong>
+                      {{
+                        collaboration.collaborator
+                      }}
+                    </strong>
+                  </p>
+
+
+                  <div class="skill-tags">
+
+                    @for (
+                      skill of collaboration.skills;
+                      track skill
+                    ) {
+
+                      <span class="skill-tag">
+                        {{ skill }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            }
+
+          </div>
+
+        </section>
+
+
+        <!-- EXPERIENCE -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+
+            <div>
+              <h2>
+                Experience
+              </h2>
+            </div>
+
+          </div>
+
+
+          @for (
+            experience of person.experiences;
+            track experience.company
+          ) {
+
+            <article class="experience-item">
+
+              <div class="experience-logo">
+                {{
+                  experience.company.charAt(0)
+                }}
+              </div>
+
+
+              <div>
+
+                <h3>
+                  {{ experience.role }}
+                </h3>
+
+                <strong>
+                  {{ experience.company }}
+                </strong>
+
+                <span>
+                  {{ experience.duration }}
+                </span>
+
+                <p>
+                  {{ experience.description }}
+                </p>
+
+
+                <div class="skill-tags">
+
+                  @for (
+                    skill of experience.skills;
+                    track skill
+                  ) {
+
+                    <span class="skill-tag">
+                      {{ skill }}
+                    </span>
+
+                  }
+
+                </div>
+
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+
+        <!-- EDUCATION -->
+        <section class="profile-section">
+
+          <div class="section-heading">
+            <h2>
+              Education
+            </h2>
+          </div>
+
+
+          @for (
+            education of person.education;
+            track education.institution
+          ) {
+
+            <article class="education-item">
+
+              <div class="education-logo">
+                U
+              </div>
+
+
+              <div>
+
+                <h3>
+                  {{ education.qualification }}
+                </h3>
+
+                <strong>
+                  {{ education.institution }}
+                </strong>
+
+                <span>
+                  {{ education.duration }}
+                </span>
+
+              </div>
+
+            </article>
+
+          }
+
+        </section>
+
+      </div>
+
+
+      <!-- ====================================
+           RIGHT SIDEBAR
+      ===================================== -->
+      <aside class="profile-sidebar">
+
+        <!-- EVIDENCE -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-heading">
+
+            <h2>
+              Professional Evidence
+            </h2>
+
+            <p>
+              Evidence built through real work.
+            </p>
+
+          </div>
+
+
+          <div class="evidence-strength">
+
+            <div>
+              <span>
+                Profile strength
+              </span>
+
+              <strong>
+                {{ person.profileStrength }}%
+              </strong>
+            </div>
+
+
+            <div class="progress-track">
+
+              <span
+                [style.width.%]="
+                  person.profileStrength
+                "
+              ></span>
+
+            </div>
+
+          </div>
+
+
+          <div class="evidence-stat">
+
+            <span>
+              Projects
+            </span>
+
+            <strong>
+              {{ person.projectsCompleted }}
+            </strong>
+
+          </div>
+
+
+          <div class="evidence-stat">
+
+            <span>
+              Verified skills
+            </span>
+
+            <strong>
+              {{ person.verifiedSkills }}
+            </strong>
+
+          </div>
+
+
+          <div class="evidence-stat">
+
+            <span>
+              Collaborators
+            </span>
+
+            <strong>
+              {{ person.collaborators }}
+            </strong>
+
+          </div>
+
+
+          <div class="evidence-stat">
+
+            <span>
+              People helped
+            </span>
+
+            <strong>
+              {{ person.peopleHelped }}
+            </strong>
+
+          </div>
+
+        </section>
+
+
+        <!-- WHY CONNECT -->
+        <section class="sidebar-card connection-card">
+
+          <span class="connection-icon">
+            ↔
+          </span>
+
+          <span class="section-label">
+            WHY CONNECT?
+          </span>
+
+          <h2>
+            You have complementary skills.
+          </h2>
+
+          <p>
+            {{
+              person.firstName
+            }} can help you develop skills
+            you're currently working on,
+            while you can contribute skills
+            they want to strengthen.
+          </p>
+
+
+          <button
+            type="button"
+            class="sidebar-connect-button"
+            [disabled]="requestSent"
+            (click)="openConnectModal()"
+          >
+            {{
+              requestSent
+                ? 'Request sent'
+                : 'Connect with purpose'
+            }}
+          </button>
+
+        </section>
+
+
+        <!-- AVAILABILITY -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-heading">
+
+            <h2>
+              Available for
+            </h2>
+
+          </div>
+
+
+          <div class="availability-list">
+
+            @for (
+              availability of person.availability;
+              track availability
+            ) {
+
+              <span>
+
+                <i></i>
+
+                {{ availability }}
+
+              </span>
+
+            }
+
+          </div>
+
+        </section>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================
+       CONNECT WITH PURPOSE MODAL
+  ===================================== -->
+  @if (isConnectModalOpen) {
+
+    <div
+      class="modal-backdrop"
+      (click)="closeConnectModal()"
+    >
+
+      <section
+        class="connect-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="connect-title"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="connect-modal-header">
+
+          <div>
+
+            <span class="section-label">
+              CONNECT WITH PURPOSE
+            </span>
+
+            <h2 id="connect-title">
+              Why do you want to connect
+              with {{ person.firstName }}?
+            </h2>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="close-button"
+            aria-label="Close"
+            (click)="closeConnectModal()"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        <div class="connect-profile-preview">
+
+          <span class="modal-avatar">
+            {{ getInitials(person.name) }}
+          </span>
+
+
+          <div>
+
+            <strong>
+              {{ person.name }}
+            </strong>
+
+            <span>
+              {{ person.role }}
+            </span>
+
+          </div>
+
+
+          <span class="modal-match">
+            {{ person.match }}% match
+          </span>
+
+        </div>
+
+
+        <div class="connect-modal-body">
+
+          <label class="purpose-label">
+            Choose a purpose
+          </label>
+
+
+          <div class="purpose-options">
+
+            @for (
+              purpose of connectionPurposes;
+              track purpose
+            ) {
+
+              <button
+                type="button"
+                class="purpose-option"
+                [class.purpose-option--selected]="
+                  selectedPurpose === purpose
+                "
+                (click)="selectPurpose(purpose)"
+              >
+
+                @switch (purpose) {
+
+                  @case ('Collaboration') {
+                    <span>◇</span>
+                  }
+
+                  @case ('Skill Exchange') {
+                    <span>↔</span>
+                  }
+
+                  @case ('I can help') {
+                    <span>✓</span>
+                  }
+
+                  @case ('Advice') {
+                    <span>◎</span>
+                  }
+
+                  @case ('Mentorship') {
+                    <span>✦</span>
+                  }
+
+                }
+
+                <strong>
+                  {{ purpose }}
+                </strong>
+
+              </button>
+
+            }
+
+          </div>
+
+
+          <div class="message-field">
+
+            <label for="connection-message">
+              Add a message
+              <span>
+                Optional
+              </span>
+            </label>
+
+
+            <textarea
+              id="connection-message"
+              rows="4"
+              maxlength="300"
+              placeholder="Introduce yourself and explain how you think you could help each other..."
+              [(ngModel)]="connectionMessage"
+            ></textarea>
+
+
+            <small>
+              {{ connectionMessage.length }}/300
+            </small>
+
+          </div>
+
+
+          @if (selectedPurpose) {
+
+            <div class="connection-summary">
+
+              <span>
+                ✦
+              </span>
+
+              <p>
+                You're connecting with
+                <strong>
+                  {{ person.firstName }}
+                </strong>
+
+                for
+
+                <strong>
+                  {{ selectedPurpose }}
+                </strong>.
+
+                CareerFlow connections are
+                designed around a clear
+                professional purpose.
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <div class="connect-modal-footer">
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="closeConnectModal()"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            class="primary-button"
+            [disabled]="!selectedPurpose"
+            (click)="sendConnectionRequest()"
+          >
+            Send connection request
+          </button>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  }
+
 </div>
