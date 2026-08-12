@@ -1,1 +1,469 @@
-<p>notifications works!</p>
+<div class="notifications-page">
+
+  <div class="notifications-container">
+
+    <!-- ========================================
+         PAGE HEADER
+    ========================================= -->
+    <section class="page-header">
+
+      <div>
+
+        <span class="eyebrow">
+          STAY UP TO DATE
+        </span>
+
+        <h1>
+          Notifications
+        </h1>
+
+        <p>
+          Keep track of connections,
+          collaboration activity,
+          evidence and opportunities
+          that need your attention.
+        </p>
+
+      </div>
+
+
+      @if (unreadCount > 0) {
+
+        <button
+          type="button"
+          class="mark-all-button"
+          (click)="markAllAsRead()"
+        >
+          ✓
+          Mark all as read
+        </button>
+
+      }
+
+    </section>
+
+
+    <!-- ========================================
+         LAYOUT
+    ========================================= -->
+    <div class="notifications-layout">
+
+      <!-- ========================================
+           MAIN CONTENT
+      ========================================= -->
+      <main class="notifications-main">
+
+        <!-- TABS -->
+        <nav
+          class="notification-tabs"
+          aria-label="Notification filters"
+        >
+
+          <button
+            type="button"
+            class="notification-tab"
+            [class.notification-tab--active]="
+              activeFilter === 'all'
+            "
+            (click)="setFilter('all')"
+          >
+            All
+
+            <span class="tab-count">
+              {{ notifications.length }}
+            </span>
+          </button>
+
+
+          <button
+            type="button"
+            class="notification-tab"
+            [class.notification-tab--active]="
+              activeFilter === 'unread'
+            "
+            (click)="setFilter('unread')"
+          >
+            Unread
+
+            @if (unreadCount > 0) {
+
+              <span
+                class="
+                  tab-count
+                  tab-count--unread
+                "
+              >
+                {{ unreadCount }}
+              </span>
+
+            }
+          </button>
+
+        </nav>
+
+
+        <!-- ========================================
+             NOTIFICATION LIST
+        ========================================= -->
+        <section class="notification-list">
+
+          @for (
+            notification
+            of filteredNotifications;
+            track notification.id
+          ) {
+
+            <article
+              class="notification-card"
+              [class.notification-card--unread]="
+                !notification.read
+              "
+            >
+
+              <!-- UNREAD INDICATOR -->
+              @if (!notification.read) {
+
+                <span
+                  class="unread-indicator"
+                  aria-label="Unread notification"
+                ></span>
+
+              }
+
+
+              <!-- AVATAR -->
+              <div class="notification-avatar">
+
+                @if (notification.actorName) {
+
+                  <span class="avatar-circle">
+                    {{
+                      getInitials(
+                        notification.actorName
+                      )
+                    }}
+                  </span>
+
+                } @else {
+
+                  <span
+                    class="
+                      avatar-circle
+                      avatar-circle--system
+                    "
+                  >
+                    CF
+                  </span>
+
+                }
+
+
+                <span
+                  [class]="
+                    getTypeClass(
+                      notification.type
+                    )
+                  "
+                >
+                  {{
+                    getTypeIcon(
+                      notification.type
+                    )
+                  }}
+                </span>
+
+              </div>
+
+
+              <!-- CONTENT -->
+              <div class="notification-content">
+
+                <div class="notification-meta">
+
+                  <span class="notification-category">
+                    {{ notification.type }}
+                  </span>
+
+                  <span class="notification-time">
+                    {{ notification.time }}
+                  </span>
+
+                </div>
+
+
+                <h2>
+                  {{ notification.title }}
+                </h2>
+
+
+                <p>
+                  {{ notification.message }}
+                </p>
+
+
+                <div class="notification-actions">
+
+                  <a
+                    [routerLink]="
+                      notification.route
+                    "
+                    class="primary-action"
+                    (click)="
+                      markAsRead(
+                        notification
+                      )
+                    "
+                  >
+                    {{
+                      notification.actionLabel
+                    }}
+
+                    <span aria-hidden="true">
+                      →
+                    </span>
+                  </a>
+
+
+                  <button
+                    type="button"
+                    class="text-action"
+                    (click)="
+                      toggleRead(
+                        notification
+                      )
+                    "
+                  >
+                    {{
+                      notification.read
+                        ? 'Mark as unread'
+                        : 'Mark as read'
+                    }}
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="
+                      text-action
+                      text-action--delete
+                    "
+                    (click)="
+                      deleteNotification(
+                        notification
+                      )
+                    "
+                  >
+                    Delete
+                  </button>
+
+                </div>
+
+              </div>
+
+            </article>
+
+          } @empty {
+
+            <div class="empty-state">
+
+              <div class="empty-state__icon">
+                ✓
+              </div>
+
+
+              @if (
+                activeFilter === 'unread'
+              ) {
+
+                <h2>
+                  You're all caught up
+                </h2>
+
+                <p>
+                  You don't have any unread
+                  notifications right now.
+                </p>
+
+
+                <button
+                  type="button"
+                  class="secondary-button"
+                  (click)="setFilter('all')"
+                >
+                  View all notifications
+                </button>
+
+              } @else {
+
+                <h2>
+                  No notifications yet
+                </h2>
+
+                <p>
+                  Connection, collaboration
+                  and evidence updates will
+                  appear here.
+                </p>
+
+              }
+
+            </div>
+
+          }
+
+        </section>
+
+      </main>
+
+
+      <!-- ========================================
+           RIGHT SIDEBAR
+      ========================================= -->
+      <aside class="notifications-sidebar">
+
+        <!-- SUMMARY -->
+        <section class="sidebar-card">
+
+          <span class="sidebar-label">
+            NOTIFICATION SUMMARY
+          </span>
+
+
+          <div class="summary-list">
+
+            <div>
+
+              <span>
+                Unread
+              </span>
+
+              <strong class="summary-unread">
+                {{ unreadCount }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Read
+              </span>
+
+              <strong>
+                {{ readCount }}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                {{ notifications.length }}
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          @if (readCount > 0) {
+
+            <button
+              type="button"
+              class="clear-read-button"
+              (click)="
+                clearReadNotifications()
+              "
+            >
+              Clear read notifications
+            </button>
+
+          }
+
+        </section>
+
+
+        <!-- IMPORTANT -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-icon">
+            ★
+          </div>
+
+          <span class="sidebar-label">
+            PROFESSIONAL EVIDENCE
+          </span>
+
+          <h2>
+            Peer verification
+          </h2>
+
+          <p>
+            Completed collaborations can
+            generate verified evidence for
+            your CareerFlow profile.
+          </p>
+
+
+          <a
+            routerLink="/collaborate/103"
+            class="sidebar-link"
+          >
+            Review completed collaboration
+
+            <span>
+              →
+            </span>
+          </a>
+
+        </section>
+
+
+        <!-- DISCOVER -->
+        <section class="sidebar-card">
+
+          <div class="sidebar-icon">
+            ◎
+          </div>
+
+          <span class="sidebar-label">
+            NEW PEOPLE
+          </span>
+
+          <h2>
+            Find useful connections
+          </h2>
+
+          <p>
+            Discover people whose skills
+            complement what you're learning
+            or building.
+          </p>
+
+
+          <a
+            routerLink="/discover"
+            class="sidebar-link"
+          >
+            Explore matches
+
+            <span>
+              →
+            </span>
+          </a>
+
+        </section>
+
+      </aside>
+
+    </div>
+
+  </div>
+
+</div>

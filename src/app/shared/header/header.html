@@ -3,8 +3,9 @@
 
     <!-- BRAND -->
     <a
-      routerLink="/dashboard"
+      [routerLink]="['/dashboard']"
       class="brand"
+      aria-label="CareerFlow home"
     >
       <span
         class="brand__mark"
@@ -25,8 +26,9 @@
       aria-label="Main navigation"
     >
 
+      <!-- HOME -->
       <a
-        routerLink="/dashboard"
+        [routerLink]="['/dashboard']"
         routerLinkActive="main-navigation__link--active"
         [routerLinkActiveOptions]="{ exact: true }"
         class="main-navigation__link"
@@ -38,12 +40,15 @@
           ⌂
         </span>
 
-        <span>Home</span>
+        <span>
+          Home
+        </span>
       </a>
 
 
+      <!-- DISCOVER -->
       <a
-        routerLink="/discover"
+        [routerLink]="['/discover']"
         routerLinkActive="main-navigation__link--active"
         class="main-navigation__link"
       >
@@ -54,12 +59,15 @@
           ◎
         </span>
 
-        <span>Discover</span>
+        <span>
+          Discover
+        </span>
       </a>
 
 
+      <!-- COLLABORATE -->
       <a
-        routerLink="/collaborate"
+        [routerLink]="['/collaborate']"
         routerLinkActive="main-navigation__link--active"
         class="main-navigation__link"
       >
@@ -70,12 +78,15 @@
           ◇
         </span>
 
-        <span>Collaborate</span>
+        <span>
+          Collaborate
+        </span>
       </a>
 
 
+      <!-- NETWORK -->
       <a
-        routerLink="/network"
+        [routerLink]="['/network']"
         routerLinkActive="main-navigation__link--active"
         class="main-navigation__link"
       >
@@ -86,7 +97,9 @@
           ⌁
         </span>
 
-        <span>Network</span>
+        <span>
+          Network
+        </span>
       </a>
 
     </nav>
@@ -95,7 +108,9 @@
     <!-- RIGHT SIDE -->
     <div class="navigation-actions">
 
+      <!-- SEARCH -->
       <label class="navigation-search">
+
         <span aria-hidden="true">
           ⌕
         </span>
@@ -105,15 +120,22 @@
           placeholder="Search people or skills"
           aria-label="Search CareerFlow"
         />
+
       </label>
 
 
+      <!-- NOTIFICATIONS -->
       <a
-        routerLink="/notifications"
+        [routerLink]="['/notifications']"
+        routerLinkActive="navigation-action--active"
         class="navigation-action"
         aria-label="Notifications"
+        title="Notifications"
       >
-        <span aria-hidden="true">
+        <span
+          class="notification-icon"
+          aria-hidden="true"
+        >
           ♢
         </span>
 
@@ -125,11 +147,13 @@
       </a>
 
 
+      <!-- PROFILE -->
       <a
-        routerLink="/profile"
+        [routerLink]="['/profile']"
         routerLinkActive="navigation-avatar--active"
         class="navigation-avatar"
         aria-label="View profile"
+        title="Profile"
       >
         MF
       </a>

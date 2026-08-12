@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
+  Router,
   RouterLink,
   RouterLinkActive
 } from '@angular/router';
@@ -14,5 +15,15 @@ import {
   styleUrl: './header.css'
 })
 export class Header {
-  notificationCount = 3;
+
+  private readonly router =
+    inject(Router);
+
+  notificationCount = 5;
+
+  goToNotifications(): void {
+    this.router.navigate([
+      '/notifications'
+    ]);
+  }
 }

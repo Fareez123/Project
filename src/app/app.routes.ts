@@ -6,6 +6,7 @@ import { Discover } from './features/discover/discover';
 import { Collaborate } from './features/collaborate/collaborate';
 import { CollaborateWorkspace } from './features/collaborate-workspace/collaborate-workspace';
 import { Network } from './features/network/network';
+import { Notifications } from './features/notifications/notifications';
 import { Profile } from './features/profile/profile';
 import { PersonProfile } from './features/person-profile/person-profile';
 
@@ -38,13 +39,17 @@ export const routes: Routes = [
         component: CollaborateWorkspace
       },
       {
+        path: 'network',
+        component: Network
+      },
+      {
+        path: 'notifications',
+        component: Notifications
+      },
+      {
         path: 'profile',
         component: Profile
       },
-      {
-  path: 'network',
-  component: Network
-},
       {
         path: 'people/:id',
         component: PersonProfile
